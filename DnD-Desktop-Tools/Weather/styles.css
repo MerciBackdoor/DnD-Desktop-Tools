@@ -21,7 +21,7 @@ body {
 }
 
 .weather-panel {
-    width: 420px; height: 680px;
+    width: 420px; height: 700px;
     background: rgba(15,18,25,0.95);
     border: 1px solid #232936;
 }

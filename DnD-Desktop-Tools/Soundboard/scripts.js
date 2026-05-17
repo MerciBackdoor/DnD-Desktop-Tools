@@ -1,52 +1,51 @@
-const files=["StoneDoor.mp3", "WoodDoor.mp3"];
+(() => {
+    const files = ["StoneDoor.mp3", "WoodDoor.mp3"];
+    // Используем уникальный ключ, чтобы не пересекаться с системой окон Desktop
+    let vol = JSON.parse(localStorage.getItem("dnd_soundboard_volume") || "{}").v ?? 0.4;
 
-let vol=JSON.parse(localStorage.getItem("sb")||"{}").v??0.4;
+    const board = document.getElementById("board");
+    const slots = 14; // 2x7
+    const pool = {};
 
-const board=document.getElementById("board");
+    function saveSoundboardVolume() {
+        localStorage.setItem("dnd_soundboard_volume", JSON.stringify({ v: vol }));
+    }
 
-const slots=14; // 2x7
-const pool={};
+    // Создаём пустую сетку
+    for (let i = 0; i < slots; i++) {
+        const b = document.createElement("button");
+        b.classList.add("empty");
+        b.textContent = "";
 
-function save(){
-localStorage.setItem("sb",JSON.stringify({v:vol}));
-}
+        const file = files[i];
 
-// создаём пустую сетку
-for(let i=0;i<slots;i++){
-const b=document.createElement("button");
-b.classList.add("empty");
-b.textContent="";
+        if (file) {
+            b.textContent = file.replace(".mp3", "");
 
-const file=files[i];
+            const a = new Audio("sounds/" + file);
+            a.volume = vol;
+            pool[file] = a;
 
-if(file){
-b.textContent=file.replace(".mp3","");
+            b.onclick = () => {
+                if (!a.paused && !a.ended) {
+                    a.pause();
+                    a.currentTime = 0;
+                    b.classList.remove("play");
+                    return;
+                }
 
-const a=new Audio("sounds/"+file);
-a.volume=vol;
-pool[file]=a;
+                a.currentTime = 0;
+                a.play();
+                b.classList.add("play");
 
-b.onclick=()=>{
+                a.onended = () => b.classList.remove("play");
 
-if(!a.paused && !a.ended){
-a.pause();
-a.currentTime=0;
-b.classList.remove("play");
-return;
-}
+                saveSoundboardVolume();
+            };
+        } else {
+            b.disabled = true;
+        }
 
-a.currentTime=0;
-a.play();
-b.classList.add("play");
-
-a.onended=()=>b.classList.remove("play");
-
-save();
-};
-
-}else{
-b.disabled=true;
-}
-
-board.appendChild(b);
-}
+        if (board) board.appendChild(b);
+    }
+})();
