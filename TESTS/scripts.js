@@ -52,7 +52,12 @@ function createWindow(app) {
     <div class="win-resize" id="rz-${id}"></div>
   `;
 
-  canvas.appendChild(el);
+canvas.appendChild(el);
+
+// ФИКС ДЛЯ СЫРОГО HTML (Чтобы монстры не пропадали после loadSession)
+if (app.srcdoc) {
+  el.querySelector('iframe').srcdoc = app.srcdoc;
+}
 
   winState[id] = { el, minimized: false, maximized: false, savedGeom: null, app };
 
@@ -235,14 +240,31 @@ function zoomOut() { zoom = Math.max(zoom / 1.15, 0.25); updateCanvasTransform()
 function resetZoom() { zoom = 1; panX = -window.innerWidth; panY = -window.innerHeight; updateCanvasTransform(); saveSession(); }
 
 // Зум колесиком (Ctrl + Wheel, либо Wheel на пустом месте)
+// Зум колесиком к курсору мыши (Ctrl + Wheel, либо Wheel на пустом месте)
 desktop.addEventListener('wheel', e => {
   if (e.ctrlKey || e.target === desktop || e.target === canvas) {
     e.preventDefault();
+    
+    // 1. Фиксируем координаты мыши относительно экрана в момент скролла
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+    
+    // 2. Вычисляем точку на холсте, в которую указывает курсор ДО изменения зума
+    const canvasX = (mouseX - panX) / zoom;
+    const canvasY = (mouseY - panY) / zoom;
+    
+    // 3. Изменяем масштаб
+    const zoomFactor = 1.08;
     if (e.deltaY < 0) {
-      zoom = Math.min(zoom * 1.08, 3);
+      zoom = Math.min(zoom * zoomFactor, 3);
     } else {
-      zoom = Math.max(zoom / 1.08, 0.25);
+      zoom = Math.max(zoom / zoomFactor, 0.25);
     }
+    
+    // 4. Корректируем панорамирование, чтобы точка под курсором не сдвинулась
+    panX = mouseX - canvasX * zoom;
+    panY = mouseY - canvasY * zoom;
+    
     updateCanvasTransform();
     saveSession();
   }
@@ -358,6 +380,41 @@ document.getElementById('modal-overlay').addEventListener('keydown', e => {
   if (e.key === 'Escape') closeAddModal();
 });
 
+window.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'OPEN_MONSTER_TAB') {
+        const { title, html } = event.data;
+        
+        // Генерируем безопасный ID на основе имени монстра.
+        // Благодаря этому, если ты кликнешь на одного и того же гоблина дважды,
+        // вместо создания дубликата просто сфокусируется уже открытое окно.
+        const monsterId = 'monster_' + title.replace(/[^a-zA-Z0-9а-яА-ЯёЁ]/g, '_');
+        
+        const isNew = !winState[monsterId];
+        
+        const app = {
+            id: monsterId,
+            title: title,
+            icon: '🐉', 
+            url: 'about:blank', // Фолбек-заглушка для src
+            srcdoc: html,       // Клади сам HTML прямо в объект приложения
+            x: (-panX / zoom) + 120 + Math.random() * 60,
+            y: (-panY / zoom) + 80 + Math.random() * 60,
+            w: 520, // Оптимальная ширина для вертикального листа монстра
+            h: 700
+        };
+        
+        // Запускаем твою стандартную сборку окна
+        createWindow(app);
+        
+        // Если окно создано впервые, прокидываем в него присланный HTML
+        if (isNew) {
+            const iframe = document.getElementById(`fr-${monsterId}`);
+            if (iframe) {
+                iframe.srcdoc = html;
+            }
+        }
+    }
+});
 /* ════════════════════════════════════════════════════════════
     СОХРАНЕНИЕ СЕССИИ (LOCALSTORAGE)
 ════════════════════════════════════════════════════════════ */

@@ -18,6 +18,13 @@ function generateNPC() {
         return;
     }
 
+    // Проверяем, есть ли вообще хотя бы один незаблокированный слот
+    const hasUnlockedSlot = squad.some((npc, idx) => npc === null || !npc.locked);
+    if (!hasUnlockedSlot) {
+        alert("Все ячейки закреплены! Снимите замочки, чтобы обновить NPC.");
+        return;
+    }
+
     const selectedGender = document.getElementById('filter-gender').value;
     const selectedRace = document.getElementById('filter-race').value;
 
@@ -41,42 +48,63 @@ function generateNPC() {
         name: name,
         gender: gender,
         race: race,
-        trait: trait
+        trait: trait,
+        locked: false // По умолчанию новый персонаж не заблокирован
     };
 
-    let targetIndex = 0;
+    let targetIndex = -1;
 
-    if (squad[0] === null) {
-        targetIndex = 0;
-        squad[0] = newNpc;
-    } else if (squad[1] === null) {
-        targetIndex = 1;
-        squad[1] = newNpc;
-    } else if (squad[2] === null) {
-        targetIndex = 2;
-        squad[2] = newNpc;
-    } else {
+    // Сценарий 1: Ищем пустые (null) места, которые физически не могут быть заблокированы
+    for (let i = 0; i < 3; i++) {
+        if (squad[i] === null) {
+            targetIndex = i;
+            break;
+        }
+    }
+
+    // Сценарий 2: Все места заняты, ищем куда перезаписать, пропуская залоканные
+    if (targetIndex === -1) {
         if (typeof window.replaceIndex === 'undefined') {
             window.replaceIndex = 0; 
         }
 
-        targetIndex = window.replaceIndex;
-        squad[window.replaceIndex] = newNpc;
-        window.replaceIndex = (window.replaceIndex + 1) % 3;
+        let checkIndex = window.replaceIndex;
+        for (let i = 0; i < 3; i++) {
+            if (squad[checkIndex] && !squad[checkIndex].locked) {
+                targetIndex = checkIndex;
+                window.replaceIndex = (checkIndex + 1) % 3;
+                break;
+            }
+            checkIndex = (checkIndex + 1) % 3; // Переходим по кругу к следующему
+        }
     }
 
-    renderSquad();
-    localStorage.setItem('npcSquad', JSON.stringify(squad));
+    if (targetIndex !== -1) {
+        squad[targetIndex] = newNpc;
+        renderSquad();
+        localStorage.setItem('npcSquad', JSON.stringify(squad));
 
-    const slotElement = document.getElementById(`npc-slot-${targetIndex + 1}`);
-    if (slotElement) {
-        slotElement.classList.remove('flash');
-        void slotElement.offsetWidth;
-        slotElement.classList.add('flash');
+        const slotElement = document.getElementById(`npc-slot-${targetIndex + 1}`);
+        if (slotElement) {
+            slotElement.classList.remove('flash');
+            void slotElement.offsetWidth;
+            slotElement.classList.add('flash');
+        }
+    }
+}
+
+// Переключение состояния замочка
+function toggleLock(index, event) {
+    if (event) event.stopPropagation(); // Защита от лишних срабатываний клика по карточке
+    if (squad[index] !== null) {
+        squad[index].locked = !squad[index].locked;
+        localStorage.setItem('npcSquad', JSON.stringify(squad));
+        renderSquad();
     }
 }
 
 function clearAllSlots() {
+    // При полной очистке удаляем абсолютно все карты
     squad = [null, null, null];
     renderSquad();
     localStorage.setItem('npcSquad', JSON.stringify(squad));
@@ -88,15 +116,25 @@ function renderSquad() {
         if (!slotElement) continue;
 
         if (squad[i] !== null) {
+            const isLocked = squad[i].locked || false;
             slotElement.innerHTML = `
+                <button class="npc-lock-btn ${isLocked ? 'is-locked' : ''}" onclick="toggleLock(${i}, event)" title="${isLocked ? 'Разблокировать карту' : 'Закрепить карту'}">
+                    ${isLocked ? '🔒' : '🔓'}
+                </button>
                 <span class="npc-name" title="${squad[i].name}">${squad[i].name}</span>
                 <span class="npc-meta">${squad[i].gender}, ${squad[i].race}</span>
                 <div class="npc-trait"><strong>Особенность:</strong> ${squad[i].trait}</div>
             `;
             slotElement.classList.remove('empty');
+            if (isLocked) {
+                slotElement.classList.add('locked-card');
+            } else {
+                slotElement.classList.remove('locked-card');
+            }
         } else {
             slotElement.innerHTML = `<p class="placeholder">🎲</p>`;
             slotElement.classList.add('empty');
+            slotElement.classList.remove('locked-card');
         }
     }
 }

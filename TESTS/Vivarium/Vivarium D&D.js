@@ -182,7 +182,6 @@ const setFieldValueHandler = (id, val) => {
 const formatText = t => t ? t.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank">$1</a>').replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\*(.+?)\*/g, '<i>$1</i>').replace(/\n/g, '<br>') : '';
 
 const viewEnemy = en => {
-    const win = window.open('', '_blank', 'width=800,height=900');
     const sMap = {'Крошечный': '1/4 клетки', 'Маленький': '1 клетка', 'Средний': '1 клетка', 'Большой': '2x2 клетки', 'Огромный': '3x3 клетки', 'Громадный': '4x4 клетки+'};
     const speeds = [];
     if (en.speed_walk > 0) speeds.push(`${en.speed_walk} фт.`);
@@ -223,7 +222,20 @@ const viewEnemy = en => {
     if (en.image) h += `<div class="img-box"><img src="${en.image}"></div>`;
     h += `<div style="color:#555; margin-top:40px; font-size:0.8em">Автор: ${en.author || 'Неизвестен'}</div></div>
     <script>function copySheet(){const el=document.getElementById('sheet-content');const range=document.createRange();range.selectNode(el);window.getSelection().removeAllRanges();window.getSelection().addRange(range);document.execCommand('copy');alert('Скопировано!');}</script></body></html>`;
-    win.document.write(h); win.document.close();
+    
+    // Проверяем, запущено ли приложение внутри iframe (внутри DnD Desktop)
+    if (window.parent && window.parent !== window) {
+        window.parent.postMessage({
+            type: 'OPEN_MONSTER_TAB',
+            title: en.name || 'Просмотр существа',
+            html: h
+        }, '*');
+    } else {
+        // Резервный фолбек для открытия в обычном браузере, если вкладка запущена отдельно
+        const win = window.open('', '_blank', 'width=800,height=900');
+        win.document.write(h); 
+        win.document.close();
+    }
 };
 
 const downloadEnemy = async en => {

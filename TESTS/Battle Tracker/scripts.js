@@ -1,5 +1,7 @@
 let combatants = [];
 let currentTurnIndex = 0;
+const deathBell = new Audio('Bell.mp3');
+deathBell.volume = 0.3; // Значение от 0.0 (тишина) до 1.0 (максимум)
 
 const CONDITION_DB = {
 "БЕССОЗНАТЕЛЬНЫЙ": `Неподвижность - Вы получаете состояния «Недееспособный» и «Сбитый с ног» и роняете всё, что держите. Когда это состояние оканчивается, вы остаётесь сбитым с ног.
@@ -265,6 +267,8 @@ window.changeHp = (index, sign) => {
                 c.hp = 0;
                 c.isDead = true;
                 c.showNotes = true;
+                deathBell.currentTime = 0;
+                deathBell.play().catch(e => console.log("Аудио заблокировано браузером:", e));
                 const msg = `СМЕРТЬ ОТ МАССИВНОГО УРОНА (Получено ${mod} при пороге ${deathThreshold})`;
                 if (!c.notes.includes("СМЕРТЬ ОТ МАССИВНОГО УРОНА")) {
                     c.notes = (msg + "\n" + c.notes).trim();
@@ -331,6 +335,8 @@ window.updateExhaustion = (i, level) => {
     if(level === 6) { 
         c.isDead = true; c.hp = 0; 
         c.showNotes = true;
+        deathBell.currentTime = 0;
+        deathBell.play().catch(e => console.log("Аудио заблокировано браузером:", e));
         const fadeMsg = `${c.name} угас от истощения`;
         if (!c.notes.includes(fadeMsg)) c.notes = (fadeMsg + "\n" + c.notes).trim();
     }
@@ -501,6 +507,8 @@ window.handleDeathSave = (i, t, s) => {
     else if (t === 'failure' && c.deathSaves.failure >= 3) { 
         c.isDead = true; 
         c.showNotes = true;
+        deathBell.currentTime = 0;
+        deathBell.play().catch(e => console.log("Аудио заблокировано браузером:", e));
         const msg = `${c.name} умер от потери крови`;
         if(!c.notes.includes(msg)) c.notes = (msg + "\n" + c.notes).trim();
     }
