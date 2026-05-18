@@ -1,7 +1,7 @@
 (() => {
-    const files = ["StoneDoor.mp3", "WoodDoor.mp3"];
+    const files = ["StoneDoor.mp3", "WoodDoor.mp3", "Zombie.mp3", "Dragon.mp3"];
     // Используем уникальный ключ, чтобы не пересекаться с системой окон Desktop
-    let vol = JSON.parse(localStorage.getItem("dnd_soundboard_volume") || "{}").v ?? 0.4;
+    let vol = JSON.parse(localStorage.getItem("dnd_soundboard_volume") || "{}").v ?? 0.3;
 
     const board = document.getElementById("board");
     const slots = 14; // 2x7

@@ -37,8 +37,8 @@ body {
 
 #desktop-canvas {
   position: absolute;
-  width: 300vw;
-  height: 300vh;
+  width: 500vw;
+  height: 500vh;
   transform-origin: 0 0;
   will-change: transform;
   background-color: #2a2e3a;
