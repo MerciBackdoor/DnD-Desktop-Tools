@@ -11498,26 +11498,21 @@ const bestiaryData = [
     }
 ];
 
-let winState = {};
-let zBase = 10;
-let focusedId = null;
+let savedMonsters = [];
 
 document.addEventListener('DOMContentLoaded', () => {
     setupSearch();
-    loadSession();
-
-    document.addEventListener('mousemove', handleDrag);
-    document.addEventListener('mouseup', stopDrag);
+    loadSavedMonsters();
 });
 
-// --- Логика Поиска ------------------------------------------------
+// --- Логика Поиска ---
 function setupSearch() {
     const searchInput = document.getElementById('search-input');
     const resultsList = document.getElementById('results-list');
 
     if (!searchInput || !resultsList) return;
 
-    // Выводим количество загруженных монстров прямо в плейсхолдер
+    // Выводим количество загруженных монстров в плейсхолдер
     searchInput.placeholder = `Поиск по имени (доступно ${bestiaryData.length})...`;
 
     searchInput.addEventListener('input', (e) => {
@@ -11536,166 +11531,89 @@ function setupSearch() {
             li.title = item.name;
 
             li.addEventListener('click', () => {
-                const winId = btoa(encodeURIComponent(item.url)).replace(/=/g, '');
-                createWindow(winId, item.name, item.url);
+                addSavedMonster(item);
             });
 
             resultsList.appendChild(li);
         });
     });
+
+    // Закрываем выпадающий список результатов при клике в любое другое место
+    document.addEventListener('click', (e) => {
+        if (e.target !== searchInput) {
+            resultsList.innerHTML = '';
+        }
+    });
 }
 
-// --- Управление Окнами (Desktop Environment) ----------------------
-function createWindow(id, name, url, savedX = null, savedY = null) {
-    if (winState[id]) {
-        focusWin(id);
-        return;
-    };
-
-    const workspace = document.getElementById('workspace');
-    if (!workspace) return;
-
-    const winEl = document.createElement('div');
-    winEl.className = 'window';
-    winEl.id = `win-${id}`;
-
-    const defaultX = 50 + (Object.keys(winState).length * 25) % (workspace.clientWidth - 500);
-    const defaultY = 50 + (Object.keys(winState).length * 25) % (workspace.clientHeight - 600);
-
-    winEl.style.left = `${savedX !== null ? savedX : defaultX}px`;
-    winEl.style.top = `${savedY !== null ? savedY : defaultY}px`;
-
-    winEl.innerHTML = `
-        <div class="window-header" onmousedown="startDrag(event, '${id}')">
-            <span class="window-title">${name}</span>
-            <div class="window-controls">
-                <button class="close-btn" onclick="closeWin('${id}', event)">&times;</button>
-            </div>
-        </div>
-        <div class="window-body">
-            <div class="iframe-overlay"></div>
-            <iframe src="${url}" loading="lazy"></iframe>
-        </div>
-    `;
-
-    winEl.addEventListener('mousedown', () => focusWin(id));
-    workspace.appendChild(winEl);
-
-    winState[id] = {
-        el: winEl,
-        name: name,
-        url: url,
-        x: savedX !== null ? savedX : defaultX,
-        y: savedY !== null ? savedY : defaultY
-    };
-
-    focusWin(id);
-    saveSession();
-}
-
-function focusWin(id) {
-    if (!winState[id]) return;
-    if (focusedId === id && winState[id].el.style.zIndex == zBase) return;
-
-    Object.values(winState).forEach(s => s.el.classList.remove('focused'));
-
-    winState[id].el.classList.add('focused');
-    winState[id].el.style.zIndex = ++zBase;
-
-    focusedId = id;
-    saveSession();
-}
-
-function closeWin(id, event) {
-    if (event) event.stopPropagation();
-    if (winState[id]) {
-        winState[id].el.remove();
-        delete winState[id];
-        if (focusedId === id) focusedId = null;
-        saveSession();
+// --- Управление сохранёнными существами ---
+function loadSavedMonsters() {
+    try {
+        const rawData = localStorage.getItem('bestiary_saved_monsters');
+        if (rawData) {
+            savedMonsters = JSON.parse(rawData);
+        }
+        renderSavedMonsters();
+    } catch (e) {
+        console.error("Не удалось восстановить список существ:", e);
     }
 }
 
-// --- Реализация Перетаскивания (Drag & Drop) ----------------------
-let dragInfo = { isDragging: false, id: null, startX: 0, startY: 0, startLeft: 0, startTop: 0 };
+function addSavedMonster(item) {
+    // Проверка на дубликаты
+    if (!savedMonsters.some(m => m.url === item.url)) {
+        savedMonsters.push(item);
+        localStorage.setItem('bestiary_saved_monsters', JSON.stringify(savedMonsters));
+        renderSavedMonsters();
+    }
 
-function startDrag(e, id) {
-    focusWin(id);
-    const win = winState[id];
-    if (!win) return;
-
-    win.el.classList.add('dragging');
-
-    dragInfo = {
-        isDragging: true,
-        id: id,
-        startX: e.clientX,
-        startY: e.clientY,
-        startLeft: parseInt(win.el.style.left, 10) || 0,
-        startTop: parseInt(win.el.style.top, 10) || 0
-    };
-
-    e.preventDefault();
+    // Сброс строки поиска после выбора
+    const searchInput = document.getElementById('search-input');
+    const resultsList = document.getElementById('results-list');
+    if (searchInput) searchInput.value = '';
+    if (resultsList) resultsList.innerHTML = '';
 }
 
-function handleDrag(e) {
-    if (!dragInfo.isDragging) return;
-    const win = winState[dragInfo.id];
-    if (!win) return;
-
-    const dx = e.clientX - dragInfo.startX;
-    const dy = e.clientY - dragInfo.startY;
-
-    const newLeft = dragInfo.startLeft + dx;
-    const newTop = dragInfo.startTop + dy;
-
-    win.el.style.left = `${newLeft}px`;
-    win.el.style.top = `${newTop}px`;
-
-    win.x = newLeft;
-    win.y = newTop;
+function removeSavedMonster(url) {
+    savedMonsters = savedMonsters.filter(m => m.url !== url);
+    localStorage.setItem('bestiary_saved_monsters', JSON.stringify(savedMonsters));
+    renderSavedMonsters();
 }
 
-function stopDrag() {
-    if (!dragInfo.isDragging) return;
-    const win = winState[dragInfo.id];
-    if (win) win.el.classList.remove('dragging');
-    dragInfo.isDragging = false;
-    dragInfo.id = null;
-    saveSession();
-}
+function renderSavedMonsters() {
+    const savedList = document.getElementById('saved-list');
+    if (!savedList) return;
+    savedList.innerHTML = '';
 
-// --- Сохранение сессии (Local Storage) ----------------------------
-function saveSession() {
-    const sessionData = {
-        focusedId: focusedId,
-        windows: Object.keys(winState).map(id => ({
-            id: id,
-            name: winState[id].name,
-            url: winState[id].url,
-            x: winState[id].x,
-            y: winState[id].y
-        }))
-    };
-    localStorage.setItem('bestiary_desktop_session', JSON.stringify(sessionData));
-}
+    savedMonsters.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'saved-item';
 
-function loadSession() {
-    try {
-        const rawData = localStorage.getItem('bestiary_desktop_session');
-        if (!rawData) return;
-
-        const sessionData = JSON.parse(rawData);
-        if (!sessionData || !sessionData.windows) return;
-
-        sessionData.windows.forEach(w => {
-            createWindow(w.id, w.name, w.url, w.x, w.y);
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'monster-name';
+        nameSpan.textContent = item.name;
+        nameSpan.title = item.name;
+        
+        // Передача команды в родительское окно главного DnD Desktop
+        nameSpan.addEventListener('click', () => {
+            window.parent.postMessage({
+                type: 'OPEN_MONSTER_TAB',
+                title: item.name,
+                url: item.url
+            }, '*');
         });
 
-        if (sessionData.focusedId) {
-            focusWin(sessionData.focusedId);
-        }
-    } catch (e) {
-        console.error("Не удалось восстановить сессию:", e);
-    }
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.innerHTML = '&times;';
+        deleteBtn.title = 'Удалить';
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Чтобы не срабатывал клик по названию при удалении
+            removeSavedMonster(item.url);
+        });
+
+        li.appendChild(nameSpan);
+        li.appendChild(deleteBtn);
+        savedList.appendChild(li);
+    });
 }

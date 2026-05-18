@@ -324,18 +324,29 @@ document.getElementById('modal-overlay').addEventListener('keydown', e => {
 
 window.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'OPEN_MONSTER_TAB') {
-    const { title, html } = event.data;
+    // Извлекаем и html (для Вивария), и url (для Бестиария)
+    const { title, html, url } = event.data; 
+    
     const monsterId = 'monster_' + title.replace(/[^a-zA-Z0-9а-яА-ЯёЁ]/g, '_');
     const isNew = !winState[monsterId];
+    
     const app = {
-      id: monsterId, title, icon: '🐉',
-      url: 'about:blank', srcdoc: html,
+      id: monsterId, 
+      title, 
+      icon: '🐉',
+      // Если передан url (Бестиарий), используем его. Иначе — 'about:blank' (Виварий)
+      url: url || 'about:blank', 
       x: (-panX / zoom) + 120 + Math.random() * 60,
       y: (-panY / zoom) + 80  + Math.random() * 60,
-      w: 520, h: 700
+      w: 520, 
+      h: 700
     };
+    
     createWindow(app);
-    if (isNew) {
+    
+    // Этот блок сработает только для Вивария, где есть html-код.
+    // Для Бестиария он просто проигнорируется, и iframe загрузит прямую ссылку.
+    if (isNew && html) {
       const iframe = document.getElementById(`fr-${monsterId}`);
       if (iframe) iframe.srcdoc = html;
     }
