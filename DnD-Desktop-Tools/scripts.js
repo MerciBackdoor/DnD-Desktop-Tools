@@ -89,8 +89,8 @@ function updateTaskbarBtn(id) {
   btn.classList.toggle('is-minimized', s.minimized);
 }
 
-// ── Фокусировка ──────────────────────────────────────────────
-function focusWin(id) {
+// ── Фокусировка (ИСПРАВЛЕНО) ──────────────────────────────────────────────
+function focusWin(id, skipSave = false) {
   if (focusedId === id && !winState[id].minimized) return;
   Object.values(winState).forEach(s => s.el.classList.remove('focused'));
   if (winState[id]) {
@@ -99,7 +99,11 @@ function focusWin(id) {
   }
   focusedId = id;
   Object.keys(winState).forEach(updateTaskbarBtn);
-  saveSession();
+  
+  // Если передан флаг skipSave, сессию не сохраняем!
+  if (!skipSave) {
+    saveSession();
+  }
 }
 
 function handleTaskbarClick(id) {

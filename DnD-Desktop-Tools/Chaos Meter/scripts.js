@@ -21,7 +21,7 @@ function loadState() {
         try {
             appState = JSON.parse(saved);
         } catch (e) {
-            console.error("Ошибка при чтении хранилища Chaos Meter", e);
+            console.error("Ошибка при чтении хранологища Chaos Meter", e);
         }
     }
     updateUI();
