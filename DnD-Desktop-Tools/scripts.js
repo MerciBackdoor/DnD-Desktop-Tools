@@ -20,6 +20,8 @@ function createWindow(app) {
   el.id = `win-${id}`;
   el.style.cssText = `left:${app.x}px;top:${app.y}px;width:${app.w}px;height:${app.h}px;z-index:${++zBase}`;
 
+  const safeSrc = app.srcdoc ? 'about:blank' : app.url;
+
   el.innerHTML = `
     <div class="win-titlebar" id="tb-${id}">
       <div class="win-dots">
@@ -336,6 +338,7 @@ window.addEventListener('message', (event) => {
       icon: '🐉',
       // Если передан url (Бестиарий), используем его. Иначе — 'about:blank' (Виварий)
       url: url || 'about:blank', 
+      srcdoc: html,
       x: (-panX / zoom) + 120 + Math.random() * 60,
       y: (-panY / zoom) + 80  + Math.random() * 60,
       w: 520, 
