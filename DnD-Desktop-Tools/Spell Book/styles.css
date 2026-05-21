@@ -253,3 +253,29 @@ body {
   background: rgba(201, 168, 76, 0.05);
   padding: 10px 15px;
 }
+
+/* Прячем плашки источников (PH14, PH24 и т.д.) */
+.spell-display .source-plaque {
+  display: none !important;
+}
+
+/* Стиль для иллюстрации заклинания */
+.spell-illustration {
+  display: block;
+  /* Увеличиваем ширину: теперь она занимает 80% от ширины панели */
+  width: 80%; 
+  max-width: 500px; /* Ограничиваем максимальный размер, чтобы не была гигантской */
+  height: auto;     /* Высота подстраивается автоматически, сохраняя пропорции */
+  margin: 10px auto 30px auto; 
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.05);
+  transition: all 0.3s ease;
+}
+
+/* Дополнительно: добавим возможность кликнуть и развернуть картинку на весь экран */
+.spell-illustration:hover {
+  border-color: var(--gold);
+  cursor: zoom-in;
+  transform: scale(1.03);
+}

@@ -20,11 +20,27 @@ function loadDatabase() {
   spellsData = spellsDatabase;
   
   // Сортировка по алфавиту (игнорируя цифру уровня в начале)
-  spellsData.sort((a, b) => {
-    const nameA = a.name.replace(/\[\d+\]\s*/, '');
-    const nameB = b.name.replace(/\[\d+\]\s*/, '');
-    return nameA.localeCompare(nameB);
-  });
+// Сортировка: сначала по уровню [число], затем по алфавиту
+spellsData.sort((a, b) => {
+  // Функция для извлечения уровня из строки вида "[3] Имя"
+  const getLevel = (name) => {
+    const match = name.match(/\[(\d+)\]/);
+    return match ? parseInt(match[1], 10) : 99; // Если уровня нет, ставим 99, чтобы оно было в конце
+  };
+
+  const levelA = getLevel(a.name);
+  const levelB = getLevel(b.name);
+
+  // Сначала сравниваем уровни
+  if (levelA !== levelB) {
+    return levelA - levelB;
+  }
+
+  // Если уровни равны, сортируем по алфавиту
+  const nameA = a.name.replace(/\[\d+\]\s*/, '').toLowerCase();
+  const nameB = b.name.replace(/\[\d+\]\s*/, '').toLowerCase();
+  return nameA.localeCompare(nameB);
+});
 
   restoreState();
   renderList();
@@ -63,16 +79,16 @@ function renderList() {
     // Проверка уровня
     let matchLevel = true;
     if (lvl !== 'all') {
-      // Ищем точное совпадение [уровень] в начале имени
       matchLevel = spell.name.startsWith(`[${lvl}]`);
     }
 
-    // Проверка текста (поиск по русскому и английскому названиям)
+    // Ищем соответствие в названии (и русское, и английское)
     let matchText = true;
     if (query !== '') {
-      // text_content содержит и русское, и английское название заклинания
-      const content = spell.text_content ? spell.text_content.toLowerCase() : spell.name.toLowerCase();
-      matchText = content.includes(query);
+      // Ищем везде: и в русском, и в английском (которое в квадратных скобках)
+      // spell.name обычно выглядит как "[1] Адское возмездие [Hellish rebuke]"
+      const nameForSearch = spell.name.toLowerCase();
+      matchText = nameForSearch.includes(query);
     }
 
     return matchLevel && matchText;
@@ -121,6 +137,29 @@ function openSpell(spell, skipSave = false) {
   
   // Вставляем готовую верстку из базы
   spellDisplay.innerHTML = spell.html_content;
+
+  // ─── ДОБАВЛЕНИЕ ИЛЛЮСТРАЦИИ ──────────────────────────────────────────
+  // Вытаскиваем английское название из URL (например, из "204-fire-bolt/" делаем "fire_bolt")
+  const urlMatch = spell.url.match(/\/spells\/\d+-(.+?)\/?$/);
+  
+  if (urlMatch) {
+    const engName = urlMatch[1].replace(/-/g, '_'); // Заменяем дефисы на нижнее подчеркивание
+    
+    // Находим заголовок внутри карточки заклинания, чтобы вставить картинку сразу под ним
+    const headerEl = spellDisplay.querySelector('.card__header');
+    if (headerEl) {
+      // Трюк с onerror: пробуем .jpg -> если ошибка, пробуем .jpeg -> если ошибка, прячем img.
+      const imgHTML = `<img 
+        src="Ilustrations eng/${engName}.jpg" 
+        onerror="if(this.src.endsWith('.jpg')) { this.src='Ilustrations eng/${engName}.jpeg'; } else { this.style.display='none'; }" 
+        class="spell-illustration" 
+        alt="Иллюстрация: ${spell.name}">`;
+      
+      // Вставляем картинку сразу после заголовка, перед основным текстом
+      headerEl.insertAdjacentHTML('afterend', imgHTML);
+    }
+  }
+  // ───────────────────────────────────────────────────────────────────
 
   currentSpellName = spell.name;
   if (!skipSave) saveState();
