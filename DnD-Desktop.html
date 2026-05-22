@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D&D Рабочий стол</title>
+  <link rel="icon" type="image/x-icon" href="DnDDesktopSmall.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<input type="file" id="folder-input" webkitdirectory directory multiple style="display:none" onchange="handleFolderSelect(event)">
+
+<div id="desktop">
+  <div id="desktop-canvas"></div>
+</div>
+
+<div id="zoom-controls">
+  <button onclick="zoomOut()">－</button>
+  <span id="zoom-level">100%</span>
+  <button onclick="zoomIn()">＋</button>
+  <button onclick="resetZoom()">Сброс</button>
+</div>
+
+<div id="taskbar">
+  <div id="taskbar-apps"></div>
+  <div class="tb-sep"></div>
+  <button id="add-btn" onclick="openAddModal()">＋ Приложение</button>
+</div>
+
+<div id="modal-overlay">
+  <div class="modal">
+    <h3>Добавить приложение</h3>
+    <button class="btn-folder-select" onclick="triggerFolderSelect()">📁 Выбрать папку приложения</button>
+    <div style="text-align: center; margin: 10px 0; color: var(--text-dim); font-size: 0.8em;">ИЛИ ВРУЧНУЮ</div>
+    <label>Название</label>
+    <input id="m-title" type="text" placeholder="Моё приложение" />
+    <label>Значок</label>
+    <input id="m-icon" type="text" placeholder="🧙" maxlength="4" />
+    <label>Файл или URL</label>
+    <input id="m-url" type="text" placeholder="myapp.html или https://..." />
+    <p class="modal-hint">Файл должен находиться в той же папке, что и index.html</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeAddModal()">Отмена</button>
+      <button class="btn-confirm" onclick="confirmAddApp()">Открыть</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="scripts.js"></script>
+<script src="app-listeners.js"></script>
+
+</body>
+</html>
+
