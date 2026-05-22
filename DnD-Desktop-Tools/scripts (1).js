@@ -11,6 +11,21 @@ let zoom = 1;
 let panX = -window.innerWidth;
 let panY = -window.innerHeight;
 
+/**
+ * Возвращает {x, y} так, чтобы окно размером (w × h)
+ * оказалось по центру видимой области десктопа.
+ * cascade (0, 1, 2…) — каскадный сдвиг при открытии нескольких окон подряд.
+ */
+function centeredWindowPosition(w, h, cascade = 0) {
+  const viewW = window.innerWidth  / zoom;
+  const viewH = desktop.offsetHeight / zoom;
+  const offset = cascade * 28;
+  return {
+    x: (-panX / zoom) + (viewW - w) / 2 + offset,
+    y: (-panY / zoom) + (viewH - h) / 2 + offset,
+  };
+}
+
 function createWindow(app) {
   const id = app.id;
   if (winState[id]) { restoreWin(id); return; }
@@ -280,15 +295,16 @@ function handleFolderSelect(e) {
   const files = e.target.files;
   let detectedHTMLCount = 0;
 
+  let cascade = 0;
   for (let file of files) {
     if (file.name.toLowerCase().endsWith('.html')) {
       const title = file.name.replace(/\.html$/i, '');
       const url   = file.webkitRelativePath;
       const id    = 'dyn_' + (++appCounter);
+      const pos   = centeredWindowPosition(860, 600, cascade++);
       const app   = {
         id, title, icon: '📁', url,
-        x: (-panX / zoom) + 60  + Math.random() * 160,
-        y: (-panY / zoom) + 40  + Math.random() * 100,
+        x: pos.x, y: pos.y,
         w: 860, h: 600
       };
       customApps.push(app);
@@ -313,7 +329,8 @@ function confirmAddApp() {
   if (!url) { showToast('Укажите URL или имя файла'); return; }
 
   const id  = 'manual_' + (++appCounter);
-  const app = { id, title, icon, url, x: (-panX / zoom) + 100, y: (-panY / zoom) + 80, w: 860, h: 600 };
+  const pos = centeredWindowPosition(860, 600);
+  const app = { id, title, icon, url, x: pos.x, y: pos.y, w: 860, h: 600 };
   customApps.push(app);
   createWindow(app);
   closeAddModal();
