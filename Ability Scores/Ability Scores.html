@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Характеристики Персонажа</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="ability_scores_styles.css">
 </head>
 <body>
   <div class="app-container">
@@ -131,11 +131,12 @@
         <div class="magic-box block-val"><label>Модификатор</label><div class="m-val" id="spell-mod">+0</div></div>
         <div class="magic-box block-val"><label>Сложность (DC)</label><div class="m-val" id="spell-dc">10</div></div>
         <div class="magic-box block-val"><label>Бонус Атаки</label><div class="m-val" id="spell-attack">+2</div></div>
-        <button id="btn-create-card" onclick="buildCharacterCard()">⚔️ Карточка Персонажа</button>
+        <button id="btn-clear" onclick="resetSheet()">Очистить</button>
+        <button id="btn-create-card" onclick="buildCharacterCard()">Создать Карточку</button>
       </div>
     </div>
 
   </div>
-  <script src="scripts.js"></script>
+  <script src="ability_scores_scripts.js"></script>
 </body>
 </html>

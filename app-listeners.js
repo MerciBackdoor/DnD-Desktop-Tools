@@ -28,7 +28,7 @@
 const APP_WINDOW_DEFAULTS = {  
   'Battle Tracker':  { w: 1400,  h: 800 },  
   'Bestiary':    { w: 400,  h: 650 }, 
-  'Cubes': { w: 735,  h: 300 },
+  'Cubes': { w: 880,  h: 340 },
   'Body Parts': { w: 735,  h: 700 }, 
   'Chaos Meter': { w: 420,  h: 250 }, 
   'Clock': { w: 425,  h: 835 },
@@ -41,6 +41,8 @@ const APP_WINDOW_DEFAULTS = {
   'Wonderful Decks':   { w: 1050, h: 700 }, 
   'Ability Scores': { w: 1090,  h: 580 },
   'Character Card': { w: 420,  h: 720 },
+  'Traps': { w: 610,  h: 680 },
+  'trap_card': { w: 650, h: 560 },
 };
 
 /**
@@ -110,6 +112,73 @@ function findWinByUrl(urlFragment) {
 const APP_HANDLERS = {
 
 
+
+  'dnd-desktop-show-trap-ref': function(data) {
+    const traps = data.traps;
+    const refId = 'trap_reference_window';
+    const isNew = !winState[refId];
+    
+    let htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+        <style>
+          body { background: #12141a; color: #d4c9b0; font-family: 'Cormorant Garamond', serif; font-size: 1.15em; padding: 15px; margin: 0; }
+          h2 { font-family: 'Cinzel', serif; color: #c9a84c; border-bottom: 1px solid #2a2e3a; padding-bottom: 5px; margin-top: 0; }
+          .trap-card { background: #1c1f28; border: 1px solid #2a2e3a; border-radius: 4px; padding: 12px; margin-bottom: 15px; }
+          .trap-title { font-family: 'Cinzel', serif; color: #d32f2f; font-size: 1.3em; margin-bottom: 5px; display: flex; justify-content: space-between; }
+          .trap-meta { font-style: italic; color: #9e9e9d; font-size: 0.9em; margin-bottom: 10px; }
+          .trap-prop { margin-bottom: 4px; }
+          .trap-prop strong { color: #fff; font-family: 'Cinzel', serif; font-size: 0.85em; }
+        </style>
+      </head>
+      <body>
+        <h2>Справочник ловушек</h2>
+    `;
+    
+    traps.forEach(t => {
+      htmlContent += `
+        <div class="trap-card">
+          <div class="trap-title"><span>${t.name}</span><span style="font-size: 0.7em; color: #c9a84c;">${t.danger}</span></div>
+          <div class="trap-meta">${t.type}</div>
+          <div class="trap-prop"><strong>Триггер:</strong> ${t.trigger}</div>
+          <div class="trap-prop"><strong>Эффект:</strong> ${t.effect}</div>
+          <div class="trap-prop"><strong>Обнаружение:</strong> ${t.detect}</div>
+          <div class="trap-prop"><strong>Обезвреживание:</strong> ${t.disable}</div>
+          ${t.note ? `<div class="trap-prop"><strong>Примечание:</strong> ${t.note}</div>` : ''}
+        </div>
+      `;
+    });
+    
+    htmlContent += `</body></html>`;
+
+    const app = {
+      id: refId,
+      title: 'Справочник ловушек',
+      url: 'about:blank',
+      srcdoc: htmlContent,
+      w: 600,
+      h: 800
+    };
+
+    if (typeof centeredWindowPosition === 'function') {
+      const p = centeredWindowPosition(600, 800);
+      app.x = p.x;
+      app.y = p.y;
+    }
+
+    if (typeof createWindow === 'function') {
+      createWindow(app);
+      if (isNew) {
+        setTimeout(() => {
+          const iframe = document.getElementById('fr-' + refId);
+          if (iframe) iframe.srcdoc = htmlContent;
+        }, 50);
+      }
+    }
+  },
 // ── Create Character Card Window ──────────────────────────────────────────
   // Source: Ability Scores app
   // Triggers: Creates a new styled window holding character summary sheets
@@ -229,6 +298,122 @@ const cardHTML = `
       if (iframe) iframe.srcdoc = cardHTML;
     }
   },
+
+
+  // ── Create Trap Card Window ──────────────────────────────────────────
+  // Source: Traps app
+  // Triggers: Creates a new styled window holding a generated trap
+  'dnd-desktop-create-trap-card': function(data) {
+    const trap = data.trap;
+    const cardId = 'trap_card_' + Date.now(); // Уникальный ID для каждой ловушки
+    
+    // Генерируем HTML для окна ловушки
+    const trapHTML = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+        <style>
+          body {
+            background: #12141a; color: #d4c9b0;
+            font-family: 'Cormorant Garamond', serif; font-size: 1.15em;
+            padding: 8px; margin: 0; box-sizing: border-box;
+          }
+          h2 {
+            font-family: 'Cinzel', serif; color: #d32f2f;
+            margin: 0 0 10px 0; border-bottom: 1px solid #3f3f4e; padding-bottom: 4px;
+            font-size: 1.5em; letter-spacing: 1px; text-align: center;
+          }
+          .block {
+            background: #1c1f28; padding: 10px; border-radius: 4px; border: 1px solid #2a2e3a;
+            margin-bottom: 12px;
+          }
+          h3 { 
+            font-family: 'Cinzel', serif; font-size: 13px; color: #c9a84c; 
+            margin: 0 0 6px 0; letter-spacing: 1px; text-transform: uppercase; 
+          }
+          p { margin: 0 0 8px 0; line-height: 1.4; }
+          p:last-child { margin: 0; }
+          strong { color: #ffffff; font-family: 'Cinzel', serif; font-size: 0.9em; letter-spacing: 0.5px; }
+          
+          .stats-grid {
+            display: grid; grid-template-columns: 1fr; gap: 8px;
+          }
+          .stat-row {
+            display: flex; justify-content: space-between; border-bottom: 1px dotted #3f3f4e; padding-bottom: 4px;
+          }
+          .stat-row:last-child { border-bottom: none; padding-bottom: 0; }
+          .highlight { color: #ff5252; font-weight: bold; font-family: 'Segoe UI', sans-serif;}
+        </style>
+      </head>
+      <body>
+        <h2>${trap.name}</h2>
+        
+        <div class="block">
+          <h3>Описание</h3>
+          <p><strong>Триггер:</strong><br>${trap.trigger}</p>
+          <p><strong>Эффект:</strong><br>${trap.effect}</p>
+        </div>
+
+        <div class="block stats-grid">
+          <h3>Механика</h3>
+          <div class="stat-row">
+            <strong>Обнаружение:</strong> <span>СЛ ${trap.detectDC} (Внимательность)</span>
+          </div>
+          <div class="stat-row">
+            <strong>Обезвреживание:</strong> <span>СЛ ${trap.disableDC}</span>
+          </div>
+          <div class="stat-row">
+            <strong>Прочность:</strong> <span>КД ${trap.ac}, ХП ${trap.hp}</span>
+          </div>
+        </div>
+
+        <div class="block stats-grid" style="border-color: #5c1e1e;">
+          <h3>Угроза</h3>
+          <div class="stat-row">
+            <strong>Спасбросок / Атака:</strong> <span>${trap.combatStat}</span>
+          </div>
+          <div class="stat-row">
+            <strong>Урон:</strong> <span class="highlight">${trap.damage}</span>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const app = {
+      id:     cardId,
+      title:  'Ловушка: ' + trap.name,
+      icon:   '⚙️',
+      url:    'about:blank',
+      srcdoc: trapHTML,
+      ...(() => { 
+        // Если функция позиционирования доступна, используем её
+        if (typeof centeredWindowPosition === 'function') {
+            const p = centeredWindowPosition(400, 580, Math.floor(Math.random() * 3)); 
+            return { x: p.x, y: p.y };
+        }
+        return { x: 100, y: 100 }; 
+      })(),
+      w: 400,
+      h: 580
+    };
+
+    // Создаем окно средствами desktop-среды
+    if (typeof createWindow === 'function') {
+      createWindow(app);
+      
+      // Явно вливаем srcdoc, как это сделано для character card
+      setTimeout(() => {
+          const iframe = document.getElementById(`fr-${cardId}`);
+          if (iframe) iframe.srcdoc = trapHTML;
+      }, 50);
+    } else {
+      console.error("Функция createWindow не найдена.");
+    }
+  },
+
 
   // ── Динамическое изменение размера окна просмотрщика изображений ──────────
   // Источник: viewer.html

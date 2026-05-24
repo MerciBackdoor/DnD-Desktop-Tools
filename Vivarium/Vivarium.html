@@ -5,13 +5,14 @@
   <title>D&D Виварий</title>
   <link rel="icon" type="image/x-icon" href="vivarium_ico.ico">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="Vivarium D&D.css">
+  <link rel="stylesheet" href="vivarium_styles.css">
 </head>
 <body>
   <div id="sidebar">
     <h3 class="sidebar-title">⚔ Список врагов ⚔</h3>
     <ul id="enemy-list"></ul>
   </div>
+  <button id="collapse-btn" title="Свернуть/развернуть панель создания" onclick="toggleMain()">◀</button>
   <div id="main">
     <h1>D&D Виварий</h1>
     <div id="top-buttons">
@@ -266,6 +267,6 @@
     </form>
     <div class="small-text" id="author-output"></div>
   </div>
-  <script src="Vivarium D&D.js"></script>
+  <script src="vivarium_scripts.js"></script>
 </body>
 </html>
