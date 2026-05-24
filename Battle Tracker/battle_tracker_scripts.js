@@ -158,7 +158,8 @@ function handleAdd(e) {
         conditions: [],
         exhaustion: 0,
         showCondMenu: false,
-        showExhaustMenu: false
+        showExhaustMenu: false,
+        reaction: true
     };
     combatants.push(newChar);
     sortAndRender();
@@ -177,6 +178,7 @@ function render() {
             <div class="combatant-main-row">
                 <button class="icon-btn" onclick="toggleCollapse(${index})">${c.isCollapsed ? '▶' : '▼'}</button>
                 <div class="combatant-name hide-on-collapse" onclick="editName(${index})" style="cursor: pointer;"><b>${c.name} ${c.isDead ? '💀' : ''}</b></div>
+                <div class="reaction-box hide-on-collapse ${c.reaction !== false ? 'reaction-active' : 'reaction-spent'}" onclick="toggleReaction(${index})" title="Реакция (Нажмите, чтобы потратить)">⚡</div>
                 <div class="inspiration-box hide-on-collapse" onclick="toggleInspiration(${index})" title="Геройское Вдохновение">
                     ${c.inspiration ? '⭐' : '<div class="insp-checkbox"></div>'}
                 </div>
@@ -289,6 +291,9 @@ window.nextTurn = () => {
         nextIndex = (nextIndex + 1) % combatants.length;
     }
     currentTurnIndex = nextIndex;
+    if (combatants[currentTurnIndex]) {
+        combatants[currentTurnIndex].reaction = true;
+    }
     combatants.forEach(c => {
         if (c.concentration && c.concentrationCounter > 0) {
             c.concentrationCounter--;
@@ -306,6 +311,9 @@ window.prevTurn = () => {
         prevIndex = (prevIndex - 1 + combatants.length) % combatants.length;
     }
     currentTurnIndex = prevIndex;
+    if (combatants[currentTurnIndex]) {
+        combatants[currentTurnIndex].reaction = true;
+    }
     
     combatants.forEach(c => {
         if (c.concentration) {
@@ -418,6 +426,12 @@ window.editName = (i) => {
     const n = prompt("Имя:", combatants[i].name); 
     if(n) { combatants[i].name = n; saveCombatants(); render(); } 
 };
+window.toggleReaction = (i) => { 
+    // Если свойства нет (старое сохранение), считаем что оно было true и меняем на false
+    combatants[i].reaction = combatants[i].reaction === false ? true : false; 
+    saveCombatants(); 
+    render(); 
+};
 window.editMaxHp = (i) => {
     const n = prompt("Макс ХП:", combatants[i].maxHp);
     if(n) { combatants[i].baseMaxHp = parseInt(n); updateExhaustion(i, combatants[i].exhaustion); }
@@ -443,6 +457,7 @@ window.longRest = () => {
             c.hp = c.maxHp;
             c.tempHp = 0;
             c.isDead = false;
+            c.reaction = true;
             c.deathSaves = { success: 0, failure: 0 };
             if (c.exhaustion > 0) {
                 updateExhaustion(index, Math.max(0, c.exhaustion - 1));
