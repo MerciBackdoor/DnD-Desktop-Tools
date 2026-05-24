@@ -35,7 +35,7 @@ const APP_WINDOW_DEFAULTS = {
   'Weather': { w: 450,  h: 835 },
   'NPC Generator': { w: 900,  h: 650 },
   'Small Loot Generator': { w: 550,  h: 480 },
-  'Soundboard': { w: 825,  h: 300 },
+  'Soundboard': { w: 820,  h: 370 },
   'Spell Book': { w: 1000,  h: 770 },
   'Vivarium':   { w: 1100, h: 700 }, 
   'Wonderful Decks':   { w: 1050, h: 700 }, 

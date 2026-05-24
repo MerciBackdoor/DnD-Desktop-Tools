@@ -51,3 +51,29 @@ overflow:hidden;
 button:active{transform:scale(.97)}
 button.play{background:#ff9f43;color:#000}
 button.empty{cursor:default}
+
+.flat-btn {
+    margin-bottom: 10px;
+    padding: 12px 30px;
+    width: auto; /* reset size to not be square like other buttons */
+    height: auto; /* height depends on padding now */
+    background: #1b1b1b;
+    color: #888;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.flat-btn:hover {
+    background: #ff9f43;
+    color: #000;
+}
+
+.flat-btn:active {
+    transform: scale(0.97);
+}
