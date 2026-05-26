@@ -40,7 +40,20 @@ const raceGenerators = {
     'орк': generateOrcSVG,
     'плазмоид': generatePlasmoidSVG,
     'полуорк': generateHalfOrcSVG,
-    'полурослик': generateHalflingSVG
+    'полурослик': generateHalflingSVG,
+    'кендер': generateKenderSVG,
+    'полуэльф': generateHalfElfSVG,
+    'сатир': generateSatyrSVG,
+    'совлин': generateOwlinSVG,
+    'три-крин': generateThriKreenSVG,
+    'тритон': generateTritonSVG,
+    'фэйри': generateFairySVG,
+    'фирболг': generateFirbolgSVG,
+    'хадози': generateHadozeeSVG,
+    'харенгон': generateHarengonSVG,
+    'хенра': generateKhenraSVG,
+    'шифтер': generateShifterSVG,
+    'юань-ти': generateYuanTiSVG
 };
 
 
@@ -59,52 +72,58 @@ function generateVisualForRace(npc) {
 }
 
 // ==========================================
-// ИСПРАВЛЕНО: ДВАРФ (Волосы перенесены на задний план)
+// ГЕНЕРАТОР: ДВАРФ (Точечные исправления)
 // ==========================================
 function generateDwarfSVG(gender) {
     const isMale = gender === 'Мужчина';
-    const skinColors = ['#5d4037', '#8d6e63', '#a1887f', '#d7ccc8', '#e2a76f', '#e9967a'];
-    const skinColor = skinColors[Math.floor(Math.random() * skinColors.length)];
-    const hairColors = ['#1a1a1a', '#555555', '#757575', '#3e2723', '#4e342e', '#bf360c', '#d35400'];
+    const hairColors = ['#d35400', '#8b4513', '#3e2723', '#7f8c8d', '#e67e22'];
     const hairColor = hairColors[Math.floor(Math.random() * hairColors.length)];
-    const clothColors = ['#263238', '#37474f', '#455a64', '#546e7a', '#3e2723'];
-    const clothColor = clothColors[Math.floor(Math.random() * clothColors.length)];
-
-    let beardSVG = '';
-    if (isMale) {
-        beardSVG = `
-            <path d="M 65 110 Q 100 230 135 110 Q 120 250 100 260 Q 80 250 65 110" fill="${hairColor}" stroke="#111" stroke-width="2"/>
-            <line x1="85" y1="130" x2="85" y2="220" stroke="rgba(0,0,0,0.3)" stroke-width="3" stroke-linecap="round"/>
-            <line x1="115" y1="130" x2="115" y2="220" stroke="rgba(0,0,0,0.3)" stroke-width="3" stroke-linecap="round"/>
-            <path d="M 80 120 Q 100 105 120 120 Q 130 135 115 135 Q 100 125 85 135 Q 70 135 80 120" fill="${hairColor}" stroke="#111" stroke-width="1"/>
-            <rect x="95" y="190" width="10" height="15" rx="3" fill="#f1c40f" stroke="#b7950b" stroke-width="1"/>
-        `;
-    }
+    
+    // ИСПРАВЛЕНИЕ: Разнообразие цветов одежды
+    const tunicColors = ['#7f8c8d', '#2c3e50', '#8b0000', '#27ae60', '#b8860b'];
+    const tunicColor = tunicColors[Math.floor(Math.random() * tunicColors.length)];
 
     return `
         <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
-            <path d="M 50 50 Q 30 100 40 180 L 160 180 Q 170 100 150 50 Z" fill="${hairColor}" />
+            <!-- ИСПРАВЛЕНИЕ: Фоновые волосы для женщин (ДО лица) -->
+            ${!isMale ? `<path d="M 55 70 Q 100 20 145 70 L 155 150 L 45 150 Z" fill="${hairColor}"/>` : ''}
 
-            <rect x="20" y="120" width="160" height="180" rx="40" fill="${clothColor}" stroke="#1e1f22" stroke-width="3"/>
-            <line x1="20" y1="260" x2="180" y2="260" stroke="#271c19" stroke-width="20"/>
-            <rect x="80" y="240" width="40" height="40" rx="5" fill="#95a5a6" stroke="#7f8c8d" stroke-width="4"/>
+            <!-- Коренастое тело -->
+            <path d="M 40 140 L 160 140 L 140 280 L 60 280 Z" fill="${tunicColor}" stroke="#111" stroke-width="2"/>
             
-            <rect x="60" y="45" width="80" height="85" rx="20" fill="${skinColor}" stroke="#1e1f22" stroke-width="2"/>
-            
-            <line x1="70" y1="75" x2="90" y2="80" stroke="${hairColor}" stroke-width="5" stroke-linecap="round"/> 
-            <line x1="130" y1="75" x2="110" y2="80" stroke="${hairColor}" stroke-width="5" stroke-linecap="round"/>
-            <circle cx="82" cy="85" r="3" fill="#111" />
-            <circle cx="118" cy="85" r="3" fill="#111" />
-            <path d="M 95 85 L 100 110 L 105 85" fill="rgba(0,0,0,0.1)" />
-            <path d="M 90 110 Q 100 115 110 110" fill="none" stroke="rgba(0,0,0,0.3)" stroke-width="3" stroke-linecap="round"/>
+            <!-- Броня -->
+            <path d="M 50 140 L 150 140 L 120 200 L 80 200 Z" fill="#95a5a6" stroke="#111" stroke-width="2"/>
+            <circle cx="80" cy="155" r="8" fill="#f1c40f"/>
+            <circle cx="120" cy="155" r="8" fill="#f1c40f"/>
 
-            <path d="M 60 65 Q 100 35 140 65 Q 145 40 100 35 Q 55 40 60 65" fill="${hairColor}" />
-            ${beardSVG}
-            ${!isMale ? `
-                <path d="M 90 125 Q 100 130 110 125" fill="none" stroke="#a05245" stroke-width="2"/>
-                <path d="M 55 120 Q 50 180 60 220" fill="none" stroke="${hairColor}" stroke-width="8" stroke-dasharray="10 5"/>
-                <path d="M 145 120 Q 150 180 140 220" fill="none" stroke="${hairColor}" stroke-width="8" stroke-dasharray="10 5"/>
-            ` : ''}
+            <!-- Короткие толстые руки -->
+            <rect x="20" y="140" width="25" height="60" fill="#f5cba7" stroke="#111" stroke-width="2"/>
+            <rect x="155" y="140" width="25" height="60" fill="#f5cba7" stroke="#111" stroke-width="2"/>
+
+            <!-- ИСПРАВЛЕНИЕ: Голова (женщины чуть менее широколицые) -->
+            <ellipse cx="100" cy="95" rx="${isMale ? 35 : 30}" ry="40" fill="#f5cba7" stroke="#111" stroke-width="2"/>
+            
+            <!-- Глаза -->
+            <circle cx="85" cy="85" r="4" fill="#111"/>
+            <circle cx="115" cy="85" r="4" fill="#111"/>
+            
+            <!-- Большой нос -->
+            <ellipse cx="100" cy="95" rx="10" ry="8" fill="#e6b0aa" stroke="#111" stroke-width="1.5"/>
+
+            ${isMale ? `
+                <!-- Плотная дварфийская борода -->
+                <path d="M 65 100 L 135 100 L 130 160 L 100 180 L 70 160 Z" fill="${hairColor}" stroke="#111" stroke-width="1"/>
+                <path d="M 75 105 Q 100 95 125 105 Q 130 115 100 110 Q 70 115 75 105 Z" fill="${hairColor}" stroke="#111" stroke-width="1"/>
+                <!-- Бусины в бороде -->
+                <circle cx="85" cy="140" r="4" fill="#f1c40f" stroke="#111"/>
+                <circle cx="115" cy="140" r="4" fill="#f1c40f" stroke="#111"/>
+                
+                <!-- Мужской шлем -->
+                <path d="M 60 70 Q 100 30 140 70 L 145 75 L 55 75 Z" fill="#bdc3c7" stroke="#111" stroke-width="2"/>
+            ` : `
+                <!-- Женская улыбка -->
+                <path d="M 90 115 Q 100 125 110 115" fill="none" stroke="#111" stroke-width="2"/>
+            `}
         </svg>
     `;
 }
@@ -936,60 +955,51 @@ function generateGiffSVG(gender) {
 }
 
 
-// ГНОМ
+// ==========================================
+// ГЕНЕРАТОР: ГНОМ (Точечное исправление волос)
+// ==========================================
 function generateGnomeSVG(gender) {
     const isMale = gender === 'Мужчина';
-    const skinColors = ['#e0ac69', '#d39e58', '#c68642', '#b87333'];
-    const skinColor = skinColors[Math.floor(Math.random() * skinColors.length)];
-    const hairColors = ['#d4ac0d', '#f1c40f', '#e67e22', '#a04000', '#784212'];
-    const hairColor = hairColors[Math.floor(Math.random() * hairColors.length)];
-    const clothColors = ['#8d6e63', '#5d4037', '#795548', '#3e2723', '#27ae60'];
-    const clothColor = clothColors[Math.floor(Math.random() * clothColors.length)];
-    
-    const hairStyle = Math.floor(Math.random() * 3);
-    let hairSVG = '';
-    if (hairStyle === 0) {
-        hairSVG = `<path d="M 40 130 L 50 80 L 70 110 L 100 70 L 130 110 L 150 80 L 160 130 Z" fill="${hairColor}"/>`;
-    } else if (hairStyle === 1) {
-        hairSVG = `<path d="M 30 160 L 50 120 L 70 140 L 100 100 L 130 140 L 150 120 L 170 160 Z" fill="${hairColor}"/>`;
-    } else {
-        hairSVG = `<circle cx="70" cy="140" r="25" fill="${hairColor}"/><circle cx="130" cy="140" r="25" fill="${hairColor}"/><circle cx="100" cy="110" r="30" fill="${hairColor}"/>`;
-    }
-
-    let beardSVG = '';
-    if (isMale) {
-        const beardStyle = Math.floor(Math.random() * 2);
-        if (beardStyle === 0) {
-            beardSVG = `<path d="M 65 180 Q 100 240 135 180 Q 120 260 100 290 Q 80 260 65 180 Z" fill="${hairColor}" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>`;
-        } else {
-            beardSVG = `<path d="M 65 180 Q 80 260 70 280 Q 100 240 130 280 Q 120 260 135 180 Z" fill="${hairColor}" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>`;
-        }
-    }
+    const hairColor = '#d35400';
 
     return `
         <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
-            ${hairSVG}
+            <!-- ИСПРАВЛЕНИЕ: Волосы на заднем плане (для объема) -->
+            <path d="M 60 90 Q 100 30 140 90 L 140 120 L 60 120 Z" fill="${hairColor}"/>
 
-            <path d="M 60 195 L 140 195 L 150 300 L 50 300 Z" fill="${clothColor}" stroke="#111" stroke-width="1.5"/>
-            <circle cx="100" cy="220" r="5" fill="#f1c40f"/>
-            <circle cx="100" cy="250" r="5" fill="#e74c3c"/>
+            <!-- Компактное тело -->
+            <path d="M 50 150 L 150 150 L 130 250 L 70 250 Z" fill="#2980b9" stroke="#111" stroke-width="2"/>
+            <rect x="85" y="130" width="30" height="20" fill="#f5cba7" stroke="#111" stroke-width="2"/>
 
-            <rect x="90" y="180" width="20" height="20" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            <!-- Руки -->
+            <rect x="35" y="150" width="15" height="50" fill="#f5cba7" stroke="#111" stroke-width="2"/>
+            <rect x="150" y="150" width="15" height="50" fill="#f5cba7" stroke="#111" stroke-width="2"/>
 
-            <ellipse cx="100" cy="155" rx="45" ry="40" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            <!-- Крупная голова -->
+            <ellipse cx="100" cy="100" rx="35" ry="35" fill="#f5cba7" stroke="#111" stroke-width="2"/>
+            
+            <!-- Глаза -->
+            <circle cx="85" cy="90" r="6" fill="#fff" stroke="#111"/>
+            <circle cx="85" cy="90" r="3" fill="#111"/>
+            <circle cx="115" cy="90" r="6" fill="#fff" stroke="#111"/>
+            <circle cx="115" cy="90" r="3" fill="#111"/>
 
-            <path d="M 95 155 Q 100 180 105 155 Z" fill="rgba(0,0,0,0.15)"/>
-            <path d="M 90 175 Q 100 185 110 175" fill="none" stroke="#111" stroke-width="1.5"/>
+            <!-- Круглый нос -->
+            <circle cx="100" cy="105" r="6" fill="#e6b0aa" stroke="#111" stroke-width="1"/>
 
-            <circle cx="80" cy="145" r="6" fill="#fff" stroke="#111"/>
-            <circle cx="80" cy="145" r="3" fill="#3498db"/>
-            <circle cx="120" cy="145" r="6" fill="#fff" stroke="#111"/>
-            <circle cx="120" cy="145" r="3" fill="#3498db"/>
+            <!-- Один рот (улыбка) -->
+            <path d="M 90 118 Q 100 128 110 118" fill="none" stroke="#111" stroke-width="2"/>
 
-            <path d="M 75 180 Q 100 200 125 180" fill="none" stroke="#111" stroke-width="2"/>
-            <path d="M 75 180 Q 100 200 125 180 Q 100 190 75 180" fill="#fff"/>
+            <!-- Острые торчащие уши -->
+            <polygon points="65,100 40,85 65,110" fill="#f5cba7" stroke="#111" stroke-width="1.5"/>
+            <polygon points="135,100 160,85 135,110" fill="#f5cba7" stroke="#111" stroke-width="1.5"/>
 
-            ${beardSVG}
+            ${isMale ? `
+                <path d="M 70 120 Q 100 150 130 120 Q 100 130 70 120 Z" fill="${hairColor}"/>
+            ` : ''}
+
+            <!-- ИСПРАВЛЕНИЕ: Прическа (челка поверх лба, а не колпак) -->
+            <path d="M 65 85 Q 100 55 135 85 Q 100 70 65 85 Z" fill="${hairColor}"/>
         </svg>
     `;
 }
@@ -1099,72 +1109,82 @@ function generateChangelingTrueSVG(gender) {
     `;
 }
 
+
+// ==========================================
+// ГЕНЕРАТОР: КАЛАШТАР (ИСПРАВЛЕНО - Короткая шея)
+// ==========================================
 function generateKalashtarSVG(gender) {
-    const skinColor = '#fdd9b5';
-    const auraColor = ['rgba(155, 89, 182, 0.4)', 'rgba(52, 152, 219, 0.4)'][Math.floor(Math.random()*2)];
+    const isMale = gender === 'Мужчина';
+    const hairColor = '#ecf0f1'; // Чаще всего светлые или необычные волосы
+    const eyeColor = '#9b59b6'; // Фиолетовые/магические глаза
 
     return `
         <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="100" cy="80" rx="60" ry="70" fill="${auraColor}" filter="blur(5px)"/>
-            <circle cx="100" cy="80" r="45" fill="#2c3e50" /> 
+            <!-- Симметричное, идеальное телосложение -->
+            <path d="M 50 130 L 150 130 L 135 280 L 65 280 Z" fill="#8e44ad" stroke="#111" stroke-width="2"/>
+            
+            <!-- Короткая шея -->
+            <rect x="90" y="115" width="20" height="15" fill="#fdf2e9" stroke="#111" stroke-width="2"/>
 
-            <rect x="85" y="110" width="30" height="50" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
-            <path d="M 50 150 L 150 150 L 160 300 L 40 300 Z" fill="#7f8c8d" stroke="#111" stroke-width="1.5"/>
+            <!-- Руки -->
+            <rect x="35" y="130" width="15" height="90" fill="#fdf2e9" stroke="#111" stroke-width="2"/>
+            <rect x="150" y="130" width="15" height="90" fill="#fdf2e9" stroke="#111" stroke-width="2"/>
 
-            <polygon points="70,50 130,50 135,90 110,125 90,125 65,90" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            <!-- Волосы на фоне -->
+            <path d="M 65 60 Q 100 20 135 60 L 140 140 L 60 140 Z" fill="${hairColor}"/>
 
-            <ellipse cx="85" cy="90" rx="7" ry="4" fill="#fff" stroke="#111"/>
-            <circle cx="85" cy="90" r="2" fill="#8e44ad"/> 
-            <ellipse cx="115" cy="90" rx="7" ry="4" fill="#fff" stroke="#111"/>
-            <circle cx="115" cy="90" r="2" fill="#8e44ad"/>
+            <!-- Идеально симметричное лицо -->
+            <ellipse cx="100" cy="85" rx="28" ry="35" fill="#fdf2e9" stroke="#111" stroke-width="2"/>
+            
+            <!-- Светящиеся магические глаза -->
+            <ellipse cx="88" cy="80" rx="5" ry="3" fill="${eyeColor}"/>
+            <ellipse cx="112" cy="80" rx="5" ry="3" fill="${eyeColor}"/>
 
-            <line x1="75" y1="100" x2="85" y2="110" stroke="rgba(0,0,0,0.2)" stroke-width="1.5"/>
-            <line x1="125" y1="100" x2="115" y2="110" stroke="rgba(0,0,0,0.2)" stroke-width="1.5"/>
+            <!-- Легкая, отстраненная улыбка -->
+            <path d="M 95 100 Q 100 102 105 100" fill="none" stroke="#111" stroke-width="1.5"/>
 
-            <path d="M 90 115 Q 100 120 110 115" fill="none" stroke="#b05245" stroke-width="2"/>
+            ${isMale ? '' : `<path d="M 65 60 Q 100 40 135 60" fill="none" stroke="${hairColor}" stroke-width="4"/>`}
         </svg>
     `;
 }
 
 // ==========================================
-// ГЕНЕРАТОР: КЕНДЕР
+// ГЕНЕРАТОР: КЕНДЕР (ИСПРАВЛЕНО - Короткая шея)
 // ==========================================
 function generateKenderSVG(gender) {
-    const skinColor = '#ffdbac';
-    const hairColor = ['#d4ac0d', '#a04000', '#271c19'][Math.floor(Math.random() * 3)];
-    
-    // 3 разных варианта прически
-    const hairType = Math.floor(Math.random() * 3);
-    let hairSVG = '';
-    if (hairType === 0) {
-        // Классический чубчик
-        hairSVG = `<path d="M 85 40 Q 100 10 115 40 Z" fill="${hairColor}"/><circle cx="100" cy="80" r="40" fill="${hairColor}"/>`;
-    } else if (hairType === 1) {
-        // Непослушная лохматая шевелюра
-        hairSVG = `<path d="M 50 60 Q 100 20 150 60 Q 170 100 140 130 Q 100 150 60 130 Q 30 100 50 60 Z" fill="${hairColor}"/>`;
-    } else {
-        // Забавные хвостики по бокам
-        hairSVG = `<circle cx="100" cy="80" r="35" fill="${hairColor}"/><circle cx="60" cy="90" r="20" fill="${hairColor}"/><circle cx="140" cy="90" r="20" fill="${hairColor}"/>`;
-    }
+    const isMale = gender === 'Мужчина';
+    const hairColors = ['#f1c40f', '#e67e22', '#d35400', '#8b4513'];
+    const hairColor = hairColors[Math.floor(Math.random() * hairColors.length)];
 
     return `
         <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
-            ${hairSVG}
+            <!-- Волосы (хвост-пучок на макушке, типичный для кендеров) -->
+            <path d="M 80 80 Q 100 40 120 80 Z" fill="${hairColor}"/>
+            <circle cx="100" cy="45" r="15" fill="${hairColor}"/>
 
-            <path d="M 65 180 L 135 180 L 145 300 L 55 300 Z" fill="#27ae60" stroke="#111" stroke-width="1.5"/>
-            <rect x="90" y="150" width="20" height="40" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            <!-- Туловище -->
+            <path d="M 50 140 L 150 140 L 130 260 L 70 260 Z" fill="#2ecc71" stroke="#111" stroke-width="2"/>
+            
+            <!-- Шея практически скрыта воротником -->
+            <rect x="90" y="130" width="20" height="10" fill="#fdd9b5" stroke="#111" stroke-width="2"/>
+            <path d="M 80 140 L 120 140 L 100 160 Z" fill="#e74c3c"/> <!-- Шейный платок -->
 
-            <path d="M 70 135 L 30 120 L 65 150" fill="${skinColor}" stroke="#111" stroke-width="1"/>
-            <path d="M 130 135 L 170 120 L 135 150" fill="${skinColor}" stroke="#111" stroke-width="1"/>
+            <!-- Руки -->
+            <rect x="35" y="140" width="15" height="70" fill="#2ecc71" stroke="#111" stroke-width="2"/>
+            <rect x="150" y="140" width="15" height="70" fill="#2ecc71" stroke="#111" stroke-width="2"/>
 
-            <ellipse cx="100" cy="120" rx="35" ry="40" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            <!-- Лицо (опущено ниже к плечам) -->
+            <ellipse cx="100" cy="100" rx="30" ry="35" fill="#fdd9b5" stroke="#111" stroke-width="2"/>
+            
+            <!-- Острые ушки -->
+            <polygon points="70,100 50,90 72,110" fill="#fdd9b5" stroke="#111" stroke-width="1.5"/>
+            <polygon points="130,100 150,90 128,110" fill="#fdd9b5" stroke="#111" stroke-width="1.5"/>
 
-            <circle cx="85" cy="115" r="7" fill="#fff" stroke="#111"/>
-            <circle cx="85" cy="115" r="3" fill="#2c3e50"/>
-            <circle cx="115" cy="115" r="7" fill="#fff" stroke="#111"/>
-            <circle cx="115" cy="115" r="3" fill="#2c3e50"/>
-
-            <path d="M 90 140 Q 100 150 110 140" fill="none" stroke="#111" stroke-width="1.5"/>
+            <circle cx="90" cy="95" r="4" fill="#111"/>
+            <circle cx="110" cy="95" r="4" fill="#111"/>
+            
+            <!-- Улыбка любопытного кендера -->
+            <path d="M 85 115 Q 100 125 115 115" fill="none" stroke="#111" stroke-width="2"/>
         </svg>
     `;
 }
@@ -1199,39 +1219,49 @@ function generateKenkuSVG(gender) {
 }
 
 // ==========================================
-// ГЕНЕРАТОР: КЕНТАВР
+// ГЕНЕРАТОР: КЕНТАВР (Точечное исправление волос)
 // ==========================================
 function generateCentaurSVG(gender) {
-    const skinColor = '#e0ac69';
-    const horseColor = ['#5d4037', '#8d6e63', '#271c19', '#d4ac0d'][Math.floor(Math.random()*4)]; 
+    const isMale = gender === 'Мужчина';
+    const skinColor = '#f5cba7';
+    const horseColors = ['#8b4513', '#d35400', '#5d4037', '#2e4053', '#e5e8e8'];
+    const horseColor = horseColors[Math.floor(Math.random() * horseColors.length)];
 
     return `
         <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="100" cy="190" rx="90" ry="50" fill="${horseColor}" stroke="#111" stroke-width="2"/>
+            <!-- Лошадиное тело (Анфас) -->
+            <circle cx="100" cy="200" r="45" fill="${horseColor}" stroke="#111" stroke-width="2"/>
             
-            <rect x="140" y="220" width="16" height="70" fill="${horseColor}" stroke="#111" stroke-width="1"/>
+            <!-- Передние конские ноги -->
+            <rect x="65" y="235" width="20" height="50" fill="${horseColor}" stroke="#111" stroke-width="2"/>
+            <rect x="115" y="235" width="20" height="50" fill="${horseColor}" stroke="#111" stroke-width="2"/>
             
-            <rect x="30" y="220" width="16" height="70" fill="${horseColor}" stroke="#111" stroke-width="1"/>
-            <rect x="28" y="290" width="20" height="10" fill="#111"/> <rect x="138" y="290" width="20" height="10" fill="#111"/> <path d="M 180 190 Q 200 240 190 290" fill="none" stroke="#111" stroke-width="10" stroke-linecap="round"/>
+            <!-- Копыта -->
+            <path d="M 60 285 L 90 285 L 85 300 L 65 300 Z" fill="#111"/>
+            <path d="M 110 285 L 140 285 L 135 300 L 115 300 Z" fill="#111"/>
 
-            <path d="M 60 100 L 110 100 L 120 180 L 50 180 Z" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
-            <path d="M 60 140 L 115 140" stroke="rgba(0,0,0,0.2)" stroke-width="2"/> 
+            <!-- Человеческий торс -->
+            <path d="M 65 110 L 135 110 L 120 170 L 80 170 Z" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            <path d="M 65 110 L 135 170 L 120 170 L 65 130 Z" fill="#27ae60" opacity="0.8"/>
 
-            <rect x="75" y="80" width="20" height="30" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            <!-- Руки -->
+            <rect x="45" y="110" width="20" height="70" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            <rect x="135" y="110" width="20" height="70" fill="${skinColor}" stroke="#111" stroke-width="2"/>
 
-            <path d="M 70 30 Q 50 80 60 110 L 110 110 Q 120 80 100 30 Z" fill="#2c3e50"/>
-            
-            <path d="M 65 75 L 25 60 L 60 90" fill="${skinColor}" stroke="#111" stroke-width="1"/>
-            <path d="M 105 75 L 145 60 L 110 90" fill="${skinColor}" stroke="#111" stroke-width="1"/>
+            <!-- ИСПРАВЛЕНИЕ: Волосы на фоне (рисуются ДО лица) -->
+            <path d="M 70 50 Q 100 20 130 50 L 135 100 L 65 100 Z" fill="#5d4037"/>
 
-            <ellipse cx="85" cy="70" rx="25" ry="35" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
-            
-            <ellipse cx="75" cy="65" rx="5" ry="3" fill="#fff" stroke="#111"/>
-            <circle cx="75" cy="65" r="2" fill="#111"/>
-            <ellipse cx="95" cy="65" rx="5" ry="3" fill="#fff" stroke="#111"/>
-            <circle cx="95" cy="65" r="2" fill="#111"/>
+            <!-- Шея и Лицо -->
+            <rect x="90" y="80" width="20" height="30" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            <ellipse cx="100" cy="70" rx="25" ry="30" fill="${skinColor}" stroke="#111" stroke-width="2"/>
 
-            <path d="M 80 90 Q 85 95 90 90" fill="none" stroke="#111" stroke-width="1.5"/>
+            <!-- Глаза -->
+            <circle cx="90" cy="65" r="3" fill="#111"/>
+            <circle cx="110" cy="65" r="3" fill="#111"/>
+            <path d="M 92 80 Q 100 85 108 80" fill="none" stroke="#111" stroke-width="1.5"/>
+
+            <!-- Борода для мужчин -->
+            ${isMale ? `<path d="M 80 85 Q 100 110 120 85 Z" fill="#5d4037"/>` : ''}
         </svg>
     `;
 }
@@ -1533,42 +1563,59 @@ function generateMinotaurSVG(gender) {
     `;
 }
 
+
 // ==========================================
-// ГЕНЕРАТОР: НАГА
+// ГЕНЕРАТОР: НАГА (ИСПРАВЛЕНО - Змеиная форма)
 // ==========================================
 function generateNagaSVG(gender) {
     const isMale = gender === 'Мужчина';
-    const scaleColors = ['#27ae60', '#2980b9', '#f39c12', '#c0392b', '#8e44ad'];
+    const scaleColors = ['#27ae60', '#2980b9', '#f39c12', '#c0392b', '#8e44ad', '#1abc9c'];
     const scaleColor = scaleColors[Math.floor(Math.random() * scaleColors.length)];
-    const skinColor = '#e0ac69';
+    const bellyColor = '#f1c40f'; // Цвет змеиного брюшка
 
-    // Мужчины: широкий капюшон. Женщины: меньше капюшон, вытянутое лицо.
-    const hoodWidth = isMale ? 90 : 50;
-    const faceHeight = isMale ? 45 : 55;
+    // Мужчины: широкий капюшон. Женщины: капюшон меньше.
+    const hoodWidth = isMale ? 85 : 55;
 
     return `
         <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="100" cy="90" rx="${hoodWidth}" ry="60" fill="${scaleColor}" stroke="#111" stroke-width="2"/>
-            <circle cx="${100 - hoodWidth/2}" cy="90" r="10" fill="#f1c40f" opacity="0.8"/>
-            <circle cx="${100 + hoodWidth/2}" cy="90" r="10" fill="#f1c40f" opacity="0.8"/>
+            <!-- Кольца хвоста на земле -->
+            <path d="M 30 260 Q 100 210 170 260 Q 200 290 150 300 Q 50 310 40 280" fill="${scaleColor}" stroke="#111" stroke-width="20" stroke-linecap="round"/>
+            <path d="M 70 200 Q 100 250 130 200" fill="none" stroke="${scaleColor}" stroke-width="40" stroke-linecap="round"/>
 
-            <path d="M 30 250 Q 100 200 170 250 Q 200 280 150 290 Q 50 310 40 270" fill="${scaleColor}" stroke="#111" stroke-width="20" stroke-linecap="round"/>
-            <path d="M 80 180 Q 100 230 120 180" fill="none" stroke="${scaleColor}" stroke-width="40" stroke-linecap="round"/>
+            <!-- Капюшон кобры -->
+            <ellipse cx="100" cy="100" rx="${hoodWidth}" ry="60" fill="${scaleColor}" stroke="#111" stroke-width="2"/>
+            <!-- Узоры на капюшоне -->
+            <circle cx="${100 - hoodWidth/2 + 5}" cy="100" r="8" fill="#111" opacity="0.6"/>
+            <circle cx="${100 + hoodWidth/2 - 5}" cy="100" r="8" fill="#111" opacity="0.6"/>
 
-            <path d="M 60 140 L 140 140 L 120 200 L 80 200 Z" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
-            <path d="M 60 140 L 140 140 L 100 180 Z" fill="#f1c40f" stroke="#e67e22" stroke-width="2"/>
-            <circle cx="100" cy="160" r="8" fill="#e74c3c"/>
+            <!-- Змеиное туловище -->
+            <path d="M 75 140 L 125 140 L 115 220 L 85 220 Z" fill="${scaleColor}" stroke="#111" stroke-width="2"/>
+            <path d="M 85 140 L 115 140 L 105 220 L 95 220 Z" fill="${bellyColor}" stroke="#111" stroke-width="1"/> <!-- Брюшко -->
 
-            <rect x="85" y="100" width="30" height="40" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            <!-- Броня и украшения -->
+            <path d="M 75 150 Q 100 170 125 150 L 130 140 L 70 140 Z" fill="#e67e22" stroke="#111" stroke-width="2"/>
+            <circle cx="100" cy="155" r="8" fill="#3498db"/>
 
-            <ellipse cx="100" cy="85" rx="30" ry="${faceHeight}" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            <!-- Руки (в чешуе) -->
+            <path d="M 75 145 L 40 180 L 50 220" fill="none" stroke="${scaleColor}" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/>
+            <path d="M 125 145 L 160 180 L 150 220" fill="none" stroke="${scaleColor}" stroke-width="14" stroke-linejoin="round" stroke-linecap="round"/>
+            <circle cx="50" cy="220" r="7" fill="${scaleColor}"/> <!-- Кисть -->
+            <circle cx="150" cy="220" r="7" fill="${scaleColor}"/>
+
+            <!-- Змеиная Голова -->
+            <ellipse cx="100" cy="85" rx="25" ry="35" fill="${scaleColor}" stroke="#111" stroke-width="2"/>
+            <path d="M 85 105 L 115 105 L 105 125 L 95 125 Z" fill="${scaleColor}" stroke="#111" stroke-width="2"/> <!-- Вытянутая морда -->
             
-            <ellipse cx="87" cy="85" rx="6" ry="3" fill="#111"/>
-            <circle cx="87" cy="85" r="1.5" fill="#f1c40f"/> <ellipse cx="113" cy="85" rx="6" ry="3" fill="#111"/>
-            <circle cx="113" cy="85" r="1.5" fill="#f1c40f"/>
+            <!-- Глаза (вертикальные зрачки) -->
+            <circle cx="90" cy="85" r="5" fill="#f1c40f"/>
+            <ellipse cx="90" cy="85" rx="1.5" ry="4" fill="#111"/>
+            <circle cx="110" cy="85" r="5" fill="#f1c40f"/>
+            <ellipse cx="110" cy="85" rx="1.5" ry="4" fill="#111"/>
 
-            <path d="M 100 95 L 100 105 L 103 105" fill="none" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
-            <line x1="90" y1="115" x2="110" y2="115" stroke="#111" stroke-width="1.5"/>
+            <!-- Ноздри и раздвоенный язык -->
+            <circle cx="97" cy="115" r="1.5" fill="#111"/>
+            <circle cx="103" cy="115" r="1.5" fill="#111"/>
+            <path d="M 100 125 L 100 135 L 96 140 M 100 135 L 104 140" fill="none" stroke="#e74c3c" stroke-width="2"/>
         </svg>
     `;
 }
@@ -1719,6 +1766,604 @@ function generateHalflingSVG(gender) {
             <path d="M 85 185 Q 100 195 115 185" fill="none" stroke="#111" stroke-width="1.5"/>
 
             ${sideburns}
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: ПОЛУЭЛЬФ
+// ==========================================
+function generateHalfElfSVG(gender) {
+    const isMale = gender === 'Мужчина';
+    const skinColors = ['#fdf2e9', '#fae5d3', '#f5cba7', '#e59866', '#d35400']; // Широкий спектр
+    const skinColor = skinColors[Math.floor(Math.random() * skinColors.length)];
+    const eyeColors = ['#2ecc71', '#3498db', '#9b59b6', '#f1c40f']; // Эльфийские яркие глаза
+    const eyeColor = eyeColors[Math.floor(Math.random() * eyeColors.length)];
+    const hairColor = '#8c4a32'; // Усредненный цвет
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 65 60 Q 100 20 135 60 L 140 140 L 60 140 Z" fill="${hairColor}"/>
+
+            <!-- Среднее телосложение (между человеком и эльфом) -->
+            <path d="M 45 150 L 155 150 L 140 280 L 60 280 Z" fill="#34495e" stroke="#111" stroke-width="2"/>
+            <rect x="85" y="130" width="30" height="20" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+
+            <!-- Лицо -->
+            <ellipse cx="100" cy="95" rx="30" ry="40" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            
+            <!-- Уши (Слегка заостренные) -->
+            <polygon points="70,95 55,80 72,105" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            <polygon points="130,95 145,80 128,105" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+
+            <!-- Эльфийские раскосые глаза -->
+            <ellipse cx="88" cy="90" rx="6" ry="3" fill="#fff" stroke="#111" transform="rotate(-10 88 90)"/>
+            <circle cx="88" cy="90" r="2.5" fill="${eyeColor}"/>
+            <ellipse cx="112" cy="90" rx="6" ry="3" fill="#fff" stroke="#111" transform="rotate(10 112 90)"/>
+            <circle cx="112" cy="90" r="2.5" fill="${eyeColor}"/>
+
+            <path d="M 97 105 L 100 112 L 103 105" fill="none" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+            <line x1="92" y1="120" x2="108" y2="120" stroke="#111" stroke-width="1.5"/>
+
+            <!-- Борода для мужчин (скрывает наследие) -->
+            ${isMale ? `<path d="M 75 110 Q 100 145 125 110 Q 100 130 75 110 Z" fill="${hairColor}" opacity="0.9"/>` : ''}
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: САТИР
+// ==========================================
+function generateSatyrSVG(gender) {
+    const isMale = gender === 'Мужчина';
+    const furColor = '#8b4513'; // Мех козла
+    const skinColor = '#e0ac69';
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <!-- Человеческий торс (короткий пояс) -->
+            <path d="M 50 140 L 150 140 L 130 200 L 70 200 Z" fill="#27ae60" stroke="#111" stroke-width="2"/> <!-- Открытая туника -->
+            <path d="M 70 140 L 130 140 L 110 200 L 90 200 Z" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+
+            <!-- Козлиные ноги (покрыты мехом) -->
+            <path d="M 70 200 L 130 200 L 140 260 L 115 250 L 120 285 L 105 285 L 95 285 L 80 285 L 85 250 L 60 260 Z" fill="${furColor}" stroke="#111" stroke-width="2"/>
+            
+            <!-- Копыта -->
+            <rect x="75" y="285" width="20" height="15" fill="#111" rx="2"/>
+            <rect x="105" y="285" width="20" height="15" fill="#111" rx="2"/>
+
+            <!-- Руки с мягкой шерстью на предплечьях -->
+            <rect x="35" y="140" width="15" height="50" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            <rect x="35" y="190" width="15" height="30" fill="${furColor}" stroke="#111" stroke-width="1.5"/>
+            <rect x="150" y="140" width="15" height="50" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            <rect x="150" y="190" width="15" height="30" fill="${furColor}" stroke="#111" stroke-width="1.5"/>
+
+            <rect x="85" y="120" width="30" height="20" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+
+            <!-- Лицо и волосы -->
+            <ellipse cx="100" cy="90" rx="30" ry="35" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            <path d="M 70 60 Q 100 40 130 60 Q 140 90 130 100 Q 100 70 70 100 Z" fill="#5d4037"/>
+
+            <!-- Козлиные рога у основания черепа -->
+            <path d="M 75 65 Q 40 40 50 20 Q 60 10 85 55" fill="#bdc3c7" stroke="#111" stroke-width="1.5"/>
+            <path d="M 125 65 Q 160 40 150 20 Q 140 10 115 55" fill="#bdc3c7" stroke="#111" stroke-width="1.5"/>
+
+            <!-- Заостренные уши -->
+            <polygon points="70,95 45,85 70,105" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            <polygon points="130,95 155,85 130,105" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+
+            <circle cx="88" cy="85" r="3" fill="#111"/>
+            <circle cx="112" cy="85" r="3" fill="#111"/>
+            <path d="M 90 105 Q 100 115 110 105" fill="none" stroke="#111" stroke-width="1.5"/>
+            
+            ${isMale ? `<path d="M 90 115 L 100 130 L 110 115 Z" fill="#5d4037"/>` : ''} <!-- Козлиная бородка -->
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: СОВЛИН
+// ==========================================
+function generateOwlinSVG(gender) {
+    const featherColors = ['#ecf0f1', '#bdc3c7', '#95a5a6', '#7f8c8d', '#5d4037'];
+    const featherColor = featherColors[Math.floor(Math.random() * featherColors.length)];
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <!-- Крылья на спине -->
+            <path d="M 80 140 Q 20 120 10 200 Q 40 250 80 180 Z" fill="${featherColor}" stroke="#111" stroke-width="2"/>
+            <path d="M 120 140 Q 180 120 190 200 Q 160 250 120 180 Z" fill="${featherColor}" stroke="#111" stroke-width="2"/>
+
+            <!-- Пушистое тело -->
+            <ellipse cx="100" cy="180" rx="45" ry="60" fill="${featherColor}" stroke="#111" stroke-width="2"/>
+            <!-- Узор на грудке -->
+            <ellipse cx="100" cy="180" rx="30" ry="45" fill="rgba(255,255,255,0.4)"/>
+            <path d="M 85 160 L 95 170 M 115 160 L 105 170 M 90 190 L 100 200 M 110 190 L 100 200" stroke="#111" stroke-width="1.5" stroke-linecap="round"/>
+
+            <!-- Лапы с когтями -->
+            <rect x="75" y="240" width="10" height="40" fill="#f39c12" stroke="#111" stroke-width="2"/>
+            <polygon points="70,280 80,270 90,280" fill="#f39c12" stroke="#111" stroke-width="1"/>
+            <rect x="115" y="240" width="10" height="40" fill="#f39c12" stroke="#111" stroke-width="2"/>
+            <polygon points="110,280 120,270 130,280" fill="#f39c12" stroke="#111" stroke-width="1"/>
+
+            <!-- Руки (отдельно от крыльев) -->
+            <path d="M 55 160 L 40 220" stroke="${featherColor}" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M 145 160 L 160 220" stroke="${featherColor}" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+
+            <!-- Совиная Голова -->
+            <circle cx="100" cy="90" r="40" fill="${featherColor}" stroke="#111" stroke-width="2"/>
+            <!-- Лицевые диски -->
+            <circle cx="80" cy="90" r="20" fill="rgba(255,255,255,0.6)" stroke="rgba(0,0,0,0.2)"/>
+            <circle cx="120" cy="90" r="20" fill="rgba(255,255,255,0.6)" stroke="rgba(0,0,0,0.2)"/>
+
+            <!-- Огромные глаза -->
+            <circle cx="80" cy="90" r="10" fill="#f1c40f" stroke="#111" stroke-width="1.5"/>
+            <circle cx="80" cy="90" r="6" fill="#111"/>
+            <circle cx="120" cy="90" r="10" fill="#f1c40f" stroke="#111" stroke-width="1.5"/>
+            <circle cx="120" cy="90" r="6" fill="#111"/>
+
+            <!-- Клюв -->
+            <polygon points="95,100 105,100 100,115" fill="#f39c12" stroke="#111" stroke-width="1.5"/>
+
+            <!-- Перьевые "ушки" на макушке -->
+            <polygon points="65,55 75,30 85,50" fill="${featherColor}" stroke="#111" stroke-width="1.5"/>
+            <polygon points="135,55 125,30 115,50" fill="${featherColor}" stroke="#111" stroke-width="1.5"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: ТРИ-КРИН
+// ==========================================
+function generateThriKreenSVG(gender) {
+    const chitinColors = ['#d4ac0d', '#aab7b8', '#a9cce3', '#f5cba7', '#7dcea0']; // Маскировочные цвета
+    const color = chitinColors[Math.floor(Math.random() * chitinColors.length)];
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <!-- Нижние маленькие руки (Вторая пара) -->
+            <path d="M 70 170 Q 30 180 50 210" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round"/>
+            <path d="M 130 170 Q 170 180 150 210" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round"/>
+
+            <!-- Верхние большие руки -->
+            <path d="M 60 130 L 20 150 L 30 200" fill="none" stroke="${color}" stroke-width="14" stroke-linejoin="bevel" stroke-linecap="round"/>
+            <path d="M 140 130 L 180 150 L 170 200" fill="none" stroke="${color}" stroke-width="14" stroke-linejoin="bevel" stroke-linecap="round"/>
+            <!-- Когти-лезвия на верхних руках -->
+            <polygon points="25,190 35,190 30,220" fill="#111"/>
+            <polygon points="165,190 175,190 170,220" fill="#111"/>
+
+            <!-- Тело (Сегментированный хитин) -->
+            <path d="M 70 120 L 130 120 L 140 160 L 60 160 Z" fill="${color}" stroke="#111" stroke-width="2"/>
+            <path d="M 60 160 L 140 160 L 120 220 L 80 220 Z" fill="${color}" stroke="#111" stroke-width="2"/>
+            <!-- Брюшко насекомого сзади -->
+            <ellipse cx="100" cy="240" rx="40" ry="50" fill="${color}" stroke="#111" stroke-width="2"/>
+            <!-- Полосы на брюшке -->
+            <line x1="65" y1="230" x2="135" y2="230" stroke="#111" stroke-width="2" opacity="0.3"/>
+            <line x1="70" y1="250" x2="130" y2="250" stroke="#111" stroke-width="2" opacity="0.3"/>
+
+            <rect x="85" y="100" width="30" height="20" fill="${color}" stroke="#111" stroke-width="2"/> <!-- Шея -->
+
+            <!-- Насекомоподобная Голова -->
+            <polygon points="100,105 70,70 100,50 130,70" fill="${color}" stroke="#111" stroke-width="2"/>
+            
+            <!-- Большие фасеточные глаза -->
+            <ellipse cx="80" cy="75" rx="10" ry="15" fill="#111" transform="rotate(-20 80 75)"/>
+            <ellipse cx="120" cy="75" rx="10" ry="15" fill="#111" transform="rotate(20 120 75)"/>
+
+            <!-- Жвалы -->
+            <path d="M 90 95 Q 95 110 100 100" fill="none" stroke="#111" stroke-width="3"/>
+            <path d="M 110 95 Q 105 110 100 100" fill="none" stroke="#111" stroke-width="3"/>
+
+            <!-- Антенны -->
+            <path d="M 90 55 Q 70 20 50 30" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round"/>
+            <path d="M 110 55 Q 130 20 150 30" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: ТРИТОН
+// ==========================================
+function generateTritonSVG(gender) {
+    const scaleColors = ['#1abc9c', '#3498db', '#2980b9', '#8e44ad', '#9b59b6', '#16a085'];
+    const color = scaleColors[Math.floor(Math.random() * scaleColors.length)];
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <!-- Выдающийся гребень (как плавник на макушке) -->
+            <path d="M 100 70 Q 120 20 80 10 Q 90 40 100 70 Z" fill="#2ecc71" stroke="#111" stroke-width="1.5"/>
+
+            <!-- Тело -->
+            <path d="M 50 140 L 150 140 L 130 280 L 70 280 Z" fill="${color}" stroke="#111" stroke-width="2"/>
+            
+            <!-- Доспехи из ракушек и кораллов -->
+            <path d="M 60 140 L 140 140 L 100 180 Z" fill="#ff7f50" stroke="#111" stroke-width="2"/> <!-- Коралловый нагрудник -->
+            <circle cx="100" cy="155" r="10" fill="#ecf0f1" stroke="#111"/> <!-- Ракушка -->
+            <line x1="90" y1="155" x2="110" y2="155" stroke="#111" opacity="0.5"/>
+            <line x1="100" y1="145" x2="100" y2="165" stroke="#111" opacity="0.5"/>
+
+            <!-- Шея -->
+            <rect x="85" y="110" width="30" height="30" fill="${color}" stroke="#111" stroke-width="1.5"/>
+
+            <!-- Руки с плавниками на предплечьях -->
+            <rect x="35" y="140" width="15" height="80" fill="${color}" stroke="#111" stroke-width="1.5"/>
+            <!-- Плавник на руке -->
+            <path d="M 35 180 Q 10 190 35 210 Z" fill="#2ecc71" stroke="#111" stroke-width="1"/>
+            
+            <rect x="150" y="140" width="15" height="80" fill="${color}" stroke="#111" stroke-width="1.5"/>
+            <!-- Плавник на руке -->
+            <path d="M 165 180 Q 190 190 165 210 Z" fill="#2ecc71" stroke="#111" stroke-width="1"/>
+
+            <!-- Перепончатые кисти -->
+            <path d="M 35 220 L 25 240 L 35 245 L 45 240 Z" fill="${color}" stroke="#111" stroke-width="1"/>
+            <path d="M 150 220 L 140 240 L 150 245 L 160 240 Z" fill="${color}" stroke="#111" stroke-width="1"/>
+
+            <!-- Голова -->
+            <ellipse cx="100" cy="85" rx="30" ry="35" fill="${color}" stroke="#111" stroke-width="1.5"/>
+            <!-- Жабры на шее -->
+            <path d="M 90 120 Q 95 125 90 130" fill="none" stroke="#111" stroke-width="1.5"/>
+            <path d="M 110 120 Q 105 125 110 130" fill="none" stroke="#111" stroke-width="1.5"/>
+
+            <!-- Лицо -->
+            <circle cx="88" cy="85" r="4" fill="#111"/>
+            <circle cx="88" cy="85" r="1.5" fill="#fff"/>
+            <circle cx="112" cy="85" r="4" fill="#111"/>
+            <circle cx="112" cy="85" r="1.5" fill="#fff"/>
+            
+            <path d="M 92 105 Q 100 110 108 105" fill="none" stroke="#111" stroke-width="1.5"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: ФЭЙРИ
+// ==========================================
+function generateFairySVG(gender) {
+    const skinColors = ['#fdf2e9', '#e8daef', '#d4efdf', '#fadbd8']; // Немного магические оттенки
+    const skinColor = skinColors[Math.floor(Math.random() * skinColors.length)];
+    const wingColors = ['rgba(241, 196, 15, 0.6)', 'rgba(52, 152, 219, 0.6)', 'rgba(231, 76, 60, 0.6)', 'rgba(155, 89, 182, 0.6)'];
+    const wingColor = wingColors[Math.floor(Math.random() * wingColors.length)];
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <!-- Блестки / магический туман вокруг -->
+            <circle cx="30" cy="150" r="3" fill="#f1c40f" opacity="0.8"/>
+            <circle cx="170" cy="100" r="2" fill="#f1c40f" opacity="0.8"/>
+            <circle cx="150" cy="250" r="4" fill="#3498db" opacity="0.6"/>
+            <circle cx="50" cy="220" r="2" fill="#e74c3c" opacity="0.7"/>
+
+            <!-- Масштабирование: делаем их маленькими (трансформация в центр) -->
+            <g transform="translate(40, 60) scale(0.6)">
+                <!-- Насекомообразные крылья -->
+                <path d="M 100 120 Q -20 0 20 100 Q 50 140 100 120" fill="${wingColor}" stroke="#fff" stroke-width="2"/>
+                <path d="M 100 120 Q 220 0 180 100 Q 150 140 100 120" fill="${wingColor}" stroke="#fff" stroke-width="2"/>
+                <!-- Нижняя пара крылышек -->
+                <path d="M 100 130 Q 20 220 60 180 Z" fill="${wingColor}" stroke="#fff" stroke-width="1"/>
+                <path d="M 100 130 Q 180 220 140 180 Z" fill="${wingColor}" stroke="#fff" stroke-width="1"/>
+
+                <!-- Волосы -->
+                <path d="M 60 60 Q 100 10 140 60 L 150 120 L 50 120 Z" fill="#e67e22"/>
+
+                <!-- Туловище маленького эльфа -->
+                <path d="M 70 140 L 130 140 L 110 240 L 90 240 Z" fill="#8e44ad" stroke="#111" stroke-width="2"/> <!-- Платье/Туника -->
+
+                <!-- Руки -->
+                <rect x="55" y="140" width="15" height="60" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+                <rect x="130" y="140" width="15" height="60" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+
+                <!-- Шея -->
+                <rect x="90" y="120" width="20" height="20" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+
+                <!-- Лицо -->
+                <ellipse cx="100" cy="90" rx="30" ry="35" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+                
+                <!-- Острые длинные ушки -->
+                <polygon points="70,90 30,70 70,100" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+                <polygon points="130,90 170,70 130,100" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+
+                <!-- Глаза -->
+                <circle cx="85" cy="85" r="5" fill="#111"/>
+                <circle cx="83" cy="83" r="1.5" fill="#fff"/>
+                <circle cx="115" cy="85" r="5" fill="#111"/>
+                <circle cx="113" cy="83" r="1.5" fill="#fff"/>
+                
+                <!-- Радостная улыбка -->
+                <path d="M 90 105 Q 100 115 110 105" fill="none" stroke="#111" stroke-width="2"/>
+            </g>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: ФИРБОЛГ
+// ==========================================
+function generateFirbolgSVG(gender) {
+    const isMale = gender === 'Мужчина';
+    const skinColors = ['#bdc3c7', '#aab7b8', '#d5d8dc', '#e6b0aa', '#d2b4de', '#a2d9ce']; // Выцветшие природные тона
+    const skinColor = skinColors[Math.floor(Math.random() * skinColors.length)];
+    const hairColors = ['#7f8c8d', '#5d4037', '#8d6e63', '#4e342e'];
+    const hairColor = hairColors[Math.floor(Math.random() * hairColors.length)];
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <!-- Массивное, широкоплечее тело -->
+            <path d="M 30 140 L 170 140 L 150 280 L 50 280 Z" fill="#795548" stroke="#111" stroke-width="2"/>
+            <path d="M 40 140 L 160 140 L 100 200 Z" fill="#5d4037" stroke="#111" stroke-width="2"/> <!-- Плащ из мха/шкур -->
+
+            <!-- Толстая шея -->
+            <rect x="80" y="110" width="40" height="30" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+
+            <!-- Крупные руки -->
+            <rect x="20" y="140" width="25" height="100" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            <rect x="155" y="140" width="25" height="100" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+
+            <!-- Густые, спутанные волосы -->
+            <path d="M 60 70 Q 100 20 140 70 L 150 140 L 50 140 Z" fill="${hairColor}"/>
+
+            <!-- Широкое лицо -->
+            <ellipse cx="100" cy="90" rx="35" ry="40" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            
+            <!-- Большие коровьи/оленьи уши (горизонтальные) -->
+            <ellipse cx="55" cy="90" rx="15" ry="8" fill="${skinColor}" stroke="#111" stroke-width="2" transform="rotate(-15 55 90)"/>
+            <ellipse cx="145" cy="90" rx="15" ry="8" fill="${skinColor}" stroke="#111" stroke-width="2" transform="rotate(15 145 90)"/>
+
+            <!-- Большой нос -->
+            <ellipse cx="100" cy="95" rx="8" ry="10" fill="rgba(0,0,0,0.1)"/>
+            <path d="M 95 95 Q 100 105 105 95" fill="none" stroke="#111" stroke-width="2"/>
+
+            <!-- Спокойные глаза -->
+            <circle cx="85" cy="85" r="4" fill="#111"/>
+            <circle cx="115" cy="85" r="4" fill="#111"/>
+            <circle cx="85" cy="85" r="1.5" fill="#f1c40f"/> <!-- Янтарный отблеск -->
+            <circle cx="115" cy="85" r="1.5" fill="#f1c40f"/>
+
+            <!-- Пышная неухоженная борода для мужчин -->
+            ${isMale ? `
+                <path d="M 65 100 Q 100 170 135 100 Q 100 120 65 100 Z" fill="${hairColor}" opacity="0.9"/>
+                <circle cx="85" cy="120" r="3" fill="#f1c40f"/> <!-- Бусина в бороде -->
+                <circle cx="110" cy="130" r="4" fill="#e74c3c"/> <!-- Бусина в бороде -->
+            ` : ''}
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: ХАДОЗИ
+// ==========================================
+function generateHadozeeSVG(gender) {
+    const furColors = ['#f5b041', '#e67e22', '#873600', '#3e2723'];
+    const furColor = furColors[Math.floor(Math.random() * furColors.length)];
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <!-- Кожистые перепонки (крылья) -->
+            <path d="M 30 160 Q 60 220 70 260 L 70 140 Z" fill="#d7bde2" stroke="#111" stroke-width="1.5" opacity="0.9"/>
+            <path d="M 170 160 Q 140 220 130 260 L 130 140 Z" fill="#d7bde2" stroke="#111" stroke-width="1.5" opacity="0.9"/>
+
+            <!-- Худощавое тело -->
+            <path d="M 65 140 L 135 140 L 120 260 L 80 260 Z" fill="#c0392b" stroke="#111" stroke-width="2"/> <!-- Легкий жилет -->
+            
+            <!-- Длинные, цепкие руки -->
+            <path d="M 65 140 L 20 180 L 30 230" fill="none" stroke="${furColor}" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M 135 140 L 180 180 L 170 230" fill="none" stroke="${furColor}" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+
+            <!-- Шея -->
+            <rect x="90" y="110" width="20" height="30" fill="${furColor}" stroke="#111" stroke-width="2"/>
+
+            <!-- Грива / волосы -->
+            <circle cx="100" cy="85" r="35" fill="#111"/> 
+            
+            <!-- Обезьянье лицо -->
+            <ellipse cx="100" cy="95" rx="25" ry="30" fill="#e0ac69" stroke="#111" stroke-width="2"/>
+            
+            <!-- Выступающие скулы и нос -->
+            <ellipse cx="100" cy="105" rx="15" ry="12" fill="#d39e5c" stroke="#111" stroke-width="1.5"/>
+            <circle cx="95" cy="105" r="2" fill="#111"/>
+            <circle cx="105" cy="105" r="2" fill="#111"/>
+
+            <!-- Живые глаза -->
+            <ellipse cx="88" cy="85" rx="6" ry="8" fill="#fff" stroke="#111"/>
+            <circle cx="88" cy="85" r="3" fill="#111"/>
+            <ellipse cx="112" cy="85" rx="6" ry="8" fill="#fff" stroke="#111"/>
+            <circle cx="112" cy="85" r="3" fill="#111"/>
+
+            <!-- Небольшие округлые уши -->
+            <circle cx="70" cy="95" r="8" fill="${furColor}" stroke="#111" stroke-width="2"/>
+            <circle cx="130" cy="95" r="8" fill="${furColor}" stroke="#111" stroke-width="2"/>
+            
+            <!-- Улыбка -->
+            <path d="M 90 115 Q 100 120 110 115" fill="none" stroke="#111" stroke-width="2"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: ХАРЕГОН (ИСПРАВЛЕНО - Соединенные ноги)
+// ==========================================
+function generateHarengonSVG(gender) {
+    const furColors = ['#fdf2e9', '#d5dbdb', '#b2babb', '#e59866', '#873600'];
+    const furColor = furColors[Math.floor(Math.random() * furColors.length)];
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <!-- Энергичная стойка / Тело -->
+            <path d="M 60 140 L 140 140 L 130 230 L 70 230 Z" fill="#2ecc71" stroke="#111" stroke-width="2"/>
+            
+            <!-- Ноги (удлинены до y=280, чтобы войти в ступни) -->
+            <rect x="70" y="230" width="15" height="50" fill="${furColor}" stroke="#111" stroke-width="2"/>
+            <rect x="115" y="230" width="15" height="50" fill="${furColor}" stroke="#111" stroke-width="2"/>
+
+            <!-- Длинные заячьи ступни -->
+            <ellipse cx="65" cy="280" rx="15" ry="30" fill="${furColor}" stroke="#111" stroke-width="2" transform="rotate(-20 65 280)"/>
+            <ellipse cx="135" cy="280" rx="15" ry="30" fill="${furColor}" stroke="#111" stroke-width="2" transform="rotate(20 135 280)"/>
+            
+            <!-- Руки -->
+            <rect x="40" y="140" width="15" height="60" fill="${furColor}" stroke="#111" stroke-width="2"/>
+            <rect x="145" y="140" width="15" height="60" fill="${furColor}" stroke="#111" stroke-width="2"/>
+
+            <!-- Заячья Голова -->
+            <ellipse cx="100" cy="95" rx="30" ry="35" fill="${furColor}" stroke="#111" stroke-width="2"/>
+            
+            <!-- Длинные заячьи уши -->
+            <ellipse cx="85" cy="35" rx="10" ry="40" fill="${furColor}" stroke="#111" stroke-width="2" transform="rotate(-15 85 35)"/>
+            <ellipse cx="85" cy="35" rx="5" ry="30" fill="#fadbd8" transform="rotate(-15 85 35)"/>
+            
+            <ellipse cx="115" cy="35" rx="10" ry="40" fill="${furColor}" stroke="#111" stroke-width="2" transform="rotate(15 115 35)"/>
+            <ellipse cx="115" cy="35" rx="5" ry="30" fill="#fadbd8" transform="rotate(15 115 35)"/>
+            
+            <!-- Глаза -->
+            <circle cx="85" cy="90" r="5" fill="#111"/>
+            <circle cx="115" cy="90" r="5" fill="#111"/>
+
+            <!-- Носик и рот -->
+            <polygon points="95,105 105,105 100,110" fill="#e74c3c"/>
+            <path d="M 100 110 L 100 115 M 100 115 Q 95 120 90 115 M 100 115 Q 105 120 110 115" fill="none" stroke="#111" stroke-width="1.5"/>
+            <!-- Усы -->
+            <line x1="70" y1="105" x2="50" y2="100" stroke="#111" stroke-width="1"/>
+            <line x1="70" y1="110" x2="50" y2="110" stroke="#111" stroke-width="1"/>
+            <line x1="130" y1="105" x2="150" y2="100" stroke="#111" stroke-width="1"/>
+            <line x1="130" y1="110" x2="150" y2="110" stroke="#111" stroke-width="1"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: ХЕНРА
+// ==========================================
+function generateKhenraSVG(gender) {
+    const furColors = ['#000000', '#212f3d', '#3e2723', '#4e342e'];
+    const furColor = furColors[Math.floor(Math.random() * furColors.length)];
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <!-- Высокое худощавое тело -->
+            <path d="M 65 150 L 135 150 L 120 280 L 80 280 Z" fill="#f1c40f" stroke="#111" stroke-width="2"/> <!-- Золотые одежды Амонхета -->
+            <path d="M 75 130 L 125 130 L 135 150 L 65 150 Z" fill="${furColor}" stroke="#111" stroke-width="2"/> <!-- Открытые плечи -->
+
+            <!-- Руки -->
+            <rect x="45" y="140" width="15" height="90" fill="${furColor}" stroke="#111" stroke-width="2"/>
+            <rect x="140" y="140" width="15" height="90" fill="${furColor}" stroke="#111" stroke-width="2"/>
+            <!-- Золотые браслеты -->
+            <rect x="43" y="180" width="19" height="10" fill="#f39c12"/>
+            <rect x="138" y="180" width="19" height="10" fill="#f39c12"/>
+
+            <!-- Шея -->
+            <rect x="85" y="110" width="30" height="30" fill="${furColor}" stroke="#111" stroke-width="2"/>
+
+            <!-- Голова шакала -->
+            <polygon points="100,60 70,110 130,110" fill="${furColor}" stroke="#111" stroke-width="2"/>
+            <!-- Острая морда -->
+            <polygon points="85,90 115,90 100,130" fill="${furColor}" stroke="#111" stroke-width="2"/>
+            <!-- Нос -->
+            <circle cx="100" cy="125" r="4" fill="#111"/>
+            
+            <!-- Прямые уши над головой -->
+            <polygon points="80,75 70,20 90,65" fill="${furColor}" stroke="#111" stroke-width="2"/>
+            <polygon points="120,75 130,20 110,65" fill="${furColor}" stroke="#111" stroke-width="2"/>
+
+            <!-- Острые глаза -->
+            <polygon points="82,95 92,92 90,98" fill="#f1c40f"/>
+            <polygon points="118,95 108,92 110,98" fill="#f1c40f"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: ШИФТЕР
+// ==========================================
+function generateShifterSVG(gender) {
+    const isMale = gender === 'Мужчина';
+    const skinColor = '#e0ac69'; // Человеческая основа
+    const furColor = '#5d4037'; // Звериный мех
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <!-- Гибкое тело -->
+            <path d="M 60 140 L 140 140 L 125 260 L 75 260 Z" fill="#34495e" stroke="#111" stroke-width="2"/>
+            <rect x="85" y="120" width="30" height="20" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+
+            <!-- Руки с пятнами меха -->
+            <rect x="40" y="140" width="15" height="80" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            <path d="M 40 180 Q 35 200 40 220 L 55 220 L 55 180 Z" fill="${furColor}"/>
+            
+            <rect x="145" y="140" width="15" height="80" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            <path d="M 145 180 Q 165 200 145 220 L 160 220 L 160 180 Z" fill="${furColor}"/>
+
+            <!-- Лицо со звериными чертами -->
+            <ellipse cx="100" cy="95" rx="30" ry="35" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            
+            <!-- Густые волосы/грива -->
+            <path d="M 60 80 Q 100 20 140 80 L 145 120 Q 100 110 55 120 Z" fill="${furColor}"/>
+            <!-- Бакенбарды / мех на щеках -->
+            <polygon points="70,95 65,115 80,110" fill="${furColor}"/>
+            <polygon points="130,95 135,115 120,110" fill="${furColor}"/>
+
+            <!-- Заостренные уши -->
+            <polygon points="70,90 50,80 70,105" fill="${furColor}" stroke="#111" stroke-width="1.5"/>
+            <polygon points="130,90 150,80 130,105" fill="${furColor}" stroke="#111" stroke-width="1.5"/>
+
+            <!-- Большие, часто кошачьи глаза -->
+            <ellipse cx="85" cy="90" rx="7" ry="5" fill="#f1c40f" stroke="#111" stroke-width="1"/>
+            <ellipse cx="85" cy="90" rx="1.5" ry="4" fill="#111"/> <!-- Вертикальный зрачок -->
+            <ellipse cx="115" cy="90" rx="7" ry="5" fill="#f1c40f" stroke="#111" stroke-width="1"/>
+            <ellipse cx="115" cy="90" rx="1.5" ry="4" fill="#111"/>
+
+            <!-- Плоский нос -->
+            <path d="M 95 105 Q 100 110 105 105" fill="none" stroke="#111" stroke-width="2"/>
+
+            <!-- Рот с выдающимися клыками -->
+            <path d="M 88 115 Q 100 120 112 115" fill="none" stroke="#111" stroke-width="1.5"/>
+            <polygon points="90,116 92,122 94,117" fill="#fff" stroke="#111" stroke-width="0.5"/> <!-- Клык -->
+            <polygon points="110,116 108,122 106,117" fill="#fff" stroke="#111" stroke-width="0.5"/> <!-- Клык -->
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: ЮАНЬ-ТИ
+// ==========================================
+function generateYuanTiSVG(gender) {
+    const skinColor = '#d5dbdb'; // Бледная кожа
+    const scaleColors = ['#27ae60', '#f1c40f', '#34495e', '#8e44ad']; // Цвет чешуек
+    const scaleColor = scaleColors[Math.floor(Math.random() * scaleColors.length)];
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <!-- Стройное тело -->
+            <path d="M 65 140 L 135 140 L 125 280 L 75 280 Z" fill="#8e44ad" stroke="#111" stroke-width="2"/> <!-- Мантия -->
+            <rect x="88" y="115" width="24" height="25" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            
+            <!-- Чешуйки на шее -->
+            <polygon points="88,120 95,130 88,140" fill="${scaleColor}" opacity="0.7"/>
+            <polygon points="112,120 105,130 112,140" fill="${scaleColor}" opacity="0.7"/>
+
+            <!-- Руки -->
+            <rect x="45" y="140" width="15" height="90" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            <rect x="140" y="140" width="15" height="90" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+
+            <!-- Гладкие темные волосы -->
+            <path d="M 65 60 Q 100 20 135 60 L 140 120 L 60 120 Z" fill="#111"/>
+
+            <!-- Человеческое, но неестественное лицо -->
+            <ellipse cx="100" cy="95" rx="28" ry="35" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            
+            <!-- Мелкие чешуйки на скулах -->
+            <circle cx="78" cy="100" r="4" fill="${scaleColor}" opacity="0.5"/>
+            <circle cx="122" cy="100" r="4" fill="${scaleColor}" opacity="0.5"/>
+
+            <!-- Пугающие глаза (змеиные) -->
+            <ellipse cx="86" cy="90" rx="6" ry="4" fill="#f1c40f" stroke="#111" stroke-width="1" transform="rotate(-10 86 90)"/>
+            <ellipse cx="86" cy="90" rx="1.5" ry="3.5" fill="#111" transform="rotate(-10 86 90)"/>
+            <ellipse cx="114" cy="90" rx="6" ry="4" fill="#f1c40f" stroke="#111" stroke-width="1" transform="rotate(10 114 90)"/>
+            <ellipse cx="114" cy="90" rx="1.5" ry="3.5" fill="#111" transform="rotate(10 114 90)"/>
+
+            <!-- Тонкий нос (почти как щели) -->
+            <line x1="97" y1="105" x2="99" y2="108" stroke="#111" stroke-width="1.5"/>
+            <line x1="103" y1="105" x2="101" y2="108" stroke="#111" stroke-width="1.5"/>
+
+            <!-- Рот и раздвоенный язык -->
+            <line x1="90" y1="115" x2="110" y2="115" stroke="#111" stroke-width="1.5"/>
+            <path d="M 100 115 L 100 123 L 97 127 M 100 123 L 103 127" fill="none" stroke="#e74c3c" stroke-width="1.5"/> <!-- Язык -->
         </svg>
     `;
 }
