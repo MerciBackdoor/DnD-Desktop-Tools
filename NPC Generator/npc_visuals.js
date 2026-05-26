@@ -17,42 +17,55 @@ const raceGenerators = {
     'авен': generateAvenSVG,
     'автогном': generateAutognomeSVG,
     'багбир': generateBugbearSVG,
-    'ведалкен': generateVedalkenSVG
+    'ведалкен': generateVedalkenSVG,
+    'вердан': generateVerdanSVG,
+    'гибрид симиков': generateSimicHybridSVG,
+    'гит': generateGithSVG,
+    'гифф': generateGiffSVG,
+    'гном': generateGnomeSVG,
+    'грунг': generateGrungSVG,
+    'дженази': generateGenasiSVG,
+    'калаштар': generateKalashtarSVG,
+    'кендер': generateKenderSVG,
+    'кенку': generateKenkuSVG,
+    'кентавр': generateCentaurSVG,
+    'кованый': generateWarforgedSVG,
+    'леонин': generateLeoninSVG,
+    'локата': generateLocathahSVG,
+    'локсодон': generateLoxodonSVG,
+    'людоящер': generateLizardfolkSVG,
+    'изменяющиеся': generateChangelingLogic // Особая функция-тумблер
 };
 
+
+// Главная функция, которая определяет, какую расу рисовать
 // Главная функция, которая определяет, какую расу рисовать
 function generateVisualForRace(npc) {
     const race = npc.race.toLowerCase().trim();
     const generator = raceGenerators[race];
     
     if (generator) {
-        return generator(npc.gender);
+        // Передаем и пол, и сам объект npc для особых случаев (как Изменяющийся)
+        return generator(npc.gender, npc);
     }
     
     return `<p style="color: #888; text-align: center; margin-top: 50px;">Визуализация для расы "${npc.race}" пока не добавлена.</p>`;
 }
 
 // ==========================================
-// ГЕНЕРАТОР: ДВАРФ
+// ИСПРАВЛЕНО: ДВАРФ (Волосы перенесены на задний план)
 // ==========================================
 function generateDwarfSVG(gender) {
     const isMale = gender === 'Мужчина';
-    
-    // Кожа от темно-коричневой до светлой с красноватым оттенком
     const skinColors = ['#5d4037', '#8d6e63', '#a1887f', '#d7ccc8', '#e2a76f', '#e9967a'];
     const skinColor = skinColors[Math.floor(Math.random() * skinColors.length)];
-    
-    // Волосы: черные, серые, коричневые, иногда рыжие
     const hairColors = ['#1a1a1a', '#555555', '#757575', '#3e2723', '#4e342e', '#bf360c', '#d35400'];
     const hairColor = hairColors[Math.floor(Math.random() * hairColors.length)];
-    
-    // Одежда (жесткая, плотная кожаная или кольчужная)
     const clothColors = ['#263238', '#37474f', '#455a64', '#546e7a', '#3e2723'];
     const clothColor = clothColors[Math.floor(Math.random() * clothColors.length)];
 
     let beardSVG = '';
     if (isMale) {
-        // У мужчин массивная, ухоженная борода
         beardSVG = `
             <path d="M 65 110 Q 100 230 135 110 Q 120 250 100 260 Q 80 250 65 110" fill="${hairColor}" stroke="#111" stroke-width="2"/>
             <line x1="85" y1="130" x2="85" y2="220" stroke="rgba(0,0,0,0.3)" stroke-width="3" stroke-linecap="round"/>
@@ -64,24 +77,22 @@ function generateDwarfSVG(gender) {
 
     return `
         <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
-            <rect x="20" y="140" width="160" height="160" rx="40" fill="${clothColor}" stroke="#1e1f22" stroke-width="3"/>
+            <path d="M 50 50 Q 30 100 40 180 L 160 180 Q 170 100 150 50 Z" fill="${hairColor}" />
+
+            <rect x="20" y="120" width="160" height="180" rx="40" fill="${clothColor}" stroke="#1e1f22" stroke-width="3"/>
             <line x1="20" y1="260" x2="180" y2="260" stroke="#271c19" stroke-width="20"/>
             <rect x="80" y="240" width="40" height="40" rx="5" fill="#95a5a6" stroke="#7f8c8d" stroke-width="4"/>
             
-            <path d="M 50 50 Q 30 100 40 180 L 160 180 Q 170 100 150 50 Z" fill="${hairColor}" />
-
             <rect x="60" y="45" width="80" height="85" rx="20" fill="${skinColor}" stroke="#1e1f22" stroke-width="2"/>
             
             <line x1="70" y1="75" x2="90" y2="80" stroke="${hairColor}" stroke-width="5" stroke-linecap="round"/> 
             <line x1="130" y1="75" x2="110" y2="80" stroke="${hairColor}" stroke-width="5" stroke-linecap="round"/>
             <circle cx="82" cy="85" r="3" fill="#111" />
             <circle cx="118" cy="85" r="3" fill="#111" />
-            
             <path d="M 95 85 L 100 110 L 105 85" fill="rgba(0,0,0,0.1)" />
             <path d="M 90 110 Q 100 115 110 110" fill="none" stroke="rgba(0,0,0,0.3)" stroke-width="3" stroke-linecap="round"/>
 
             <path d="M 60 65 Q 100 35 140 65 Q 145 40 100 35 Q 55 40 60 65" fill="${hairColor}" />
-
             ${beardSVG}
             ${!isMale ? `
                 <path d="M 90 125 Q 100 130 110 125" fill="none" stroke="#a05245" stroke-width="2"/>
@@ -220,66 +231,47 @@ function generateHumanSVG(gender) {
 }
 
 // ==========================================
-// ГЕНЕРАТОР: ТИФЛИНГ
+// ИСПРАВЛЕНО: ТИФЛИНГ (Волосы перенесены на задний план)
 // ==========================================
 function generateTieflingSVG(gender) {
     const isMale = gender === 'Мужчина';
-    
-    // Кожа: Человеческие тона + все оттенки красного
     const skinColors = ['#c0392b', '#922b21', '#cd6155', '#7b241c', '#e0ac69', '#c68642'];
     const skinColor = skinColors[Math.floor(Math.random() * skinColors.length)];
-    
-    // Глаза сплошного цвета без зрачков (черный, красный, белый, серебро, золото)
     const eyeColors = ['#111111', '#e74c3c', '#ffffff', '#ecf0f1', '#f1c40f'];
     const eyeColor = eyeColors[Math.floor(Math.random() * eyeColors.length)];
-    
-    // Волосы: темные, красные, синие, фиолетовые
     const hairColors = ['#111116', '#2c1a36', '#1b263b', '#4a0e17', '#4d1354'];
     const hairColor = hairColors[Math.floor(Math.random() * hairColors.length)];
-
-    // ЛОР: Разные формы рогов (витые бараньи, прямые газельи, спиральные)
     const hornTypes = ['ram', 'straight', 'spiral'];
     const hornType = hornTypes[Math.floor(Math.random() * hornTypes.length)];
     
     let hornsSVG = '';
-    if (hornType === 'ram') { // Витые рога
-        hornsSVG = `
-            <path d="M 75 55 Q 30 10 20 50 Q 40 70 70 60" fill="#2c3e50" stroke="#111" stroke-width="1.5"/>
-            <path d="M 125 55 Q 170 10 180 50 Q 160 70 130 60" fill="#2c3e50" stroke="#111" stroke-width="1.5"/>
-        `;
-    } else if (hornType === 'straight') { // Длинные прямые
-        hornsSVG = `
-            <path d="M 72 52 L 40 -10 L 60 45" fill="#34495e" stroke="#111" stroke-width="1.5"/>
-            <path d="M 128 52 L 160 -10 L 140 45" fill="#34495e" stroke="#111" stroke-width="1.5"/>
-        `;
-    } else { // Спиральные
-        hornsSVG = `
-            <path d="M 72 52 Q 50 15 60 0 Q 45 20 66 48" fill="#1a252f" stroke="#111" stroke-width="2"/>
-            <path d="M 128 52 Q 150 15 140 0 Q 155 20 134 48" fill="#1a252f" stroke="#111" stroke-width="2"/>
-        `;
+    if (hornType === 'ram') {
+        hornsSVG = `<path d="M 75 55 Q 30 10 20 50 Q 40 70 70 60" fill="#2c3e50" stroke="#111" stroke-width="1.5"/><path d="M 125 55 Q 170 10 180 50 Q 160 70 130 60" fill="#2c3e50" stroke="#111" stroke-width="1.5"/>`;
+    } else if (hornType === 'straight') {
+        hornsSVG = `<path d="M 72 52 L 40 -10 L 60 45" fill="#34495e" stroke="#111" stroke-width="1.5"/><path d="M 128 52 L 160 -10 L 140 45" fill="#34495e" stroke="#111" stroke-width="1.5"/>`;
+    } else {
+        hornsSVG = `<path d="M 72 52 Q 50 15 60 0 Q 45 20 66 48" fill="#1a252f" stroke="#111" stroke-width="2"/><path d="M 128 52 Q 150 15 140 0 Q 155 20 134 48" fill="#1a252f" stroke="#111" stroke-width="2"/>`;
     }
 
     return `
         <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 60 60 Q 100 30 140 60 L 155 240 Q 100 200 45 240 Z" fill="${hairColor}"/>
             <path d="M 100 270 Q 160 280 170 230 Q 180 180 160 190" fill="none" stroke="${skinColor}" stroke-width="10" stroke-linecap="round"/>
             
-            <path d="M 50 170 L 150 170 L 170 300 L 30 300 Z" fill="#212f3d" stroke="#111"/>
+            <rect x="85" y="110" width="30" height="50" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            <path d="M 50 150 L 150 150 L 170 300 L 30 300 Z" fill="#212f3d" stroke="#111"/>
 
             ${hornsSVG}
-
-            <path d="M 60 60 Q 100 30 140 60 L 155 210 Q 100 180 45 210 Z" fill="${hairColor}"/>
-
-            <ellipse cx="100" cy="105" rx="36" ry="46" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            <ellipse cx="100" cy="95" rx="36" ry="46" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
             
-            <ellipse cx="85" cy="100" rx="8" ry="5" fill="${eyeColor}" stroke="rgba(0,0,0,0.4)"/>
-            <ellipse cx="115" cy="100" rx="8" ry="5" fill="${eyeColor}" stroke="rgba(0,0,0,0.4)"/>
+            <ellipse cx="85" cy="90" rx="8" ry="5" fill="${eyeColor}" stroke="rgba(0,0,0,0.4)"/>
+            <ellipse cx="115" cy="90" rx="8" ry="5" fill="${eyeColor}" stroke="rgba(0,0,0,0.4)"/>
 
-            <path d="M 85 125 Q 100 140 115 125 Z" fill="#fff" stroke="#111" stroke-width="1"/>
-            <path d="M 85 125 Q 100 140 115 125" fill="none" stroke="#111" stroke-width="1.5"/>
-            <line x1="93" y1="127" x2="93" y2="132" stroke="#444" stroke-width="1"/>
-            <line x1="107" y1="127" x2="107" y2="132" stroke="#444" stroke-width="1"/>
+            <path d="M 85 115 Q 100 130 115 115 Z" fill="#fff" stroke="#111" stroke-width="1"/>
+            <line x1="93" y1="117" x2="93" y2="122" stroke="#444" stroke-width="1"/>
+            <line x1="107" y1="117" x2="107" y2="122" stroke="#444" stroke-width="1"/>
 
-            <path d="M 66 80 Q 100 65 134 80" fill="none" stroke="${hairColor}" stroke-width="6" stroke-linecap="round"/>
+            <path d="M 66 70 Q 100 55 134 70" fill="none" stroke="${hairColor}" stroke-width="6" stroke-linecap="round"/>
         </svg>
     `;
 }
@@ -456,35 +448,27 @@ function generateTabaxiSVG(gender) {
 }
 
 // ==========================================
-// ГЕНЕРАТОР: ЭЛЬФ И АСТРАЛЬНЫЙ ЭЛЬФ (Базовая логика)
+// ИСПРАВЛЕНО: ЭЛЬФ / АСТРАЛЬНЫЙ ЭЛЬФ (Волосы перенесены на задний план)
 // ==========================================
 function generateElfBaseSVG(gender, isAstral) {
     const isMale = gender === 'Мужчина';
-    
-    // Цвета кожи: человеческие + медь, бронза, голубовато-белый
     const skinColors = ['#fdd9b5', '#ffdbac', '#e0ac69', '#c68642', '#8d5524', '#b87333', '#cd7f32', '#eaf2f8'];
     const skinColor = skinColors[Math.floor(Math.random() * skinColors.length)];
-    
-    // Цвета волос: человеческие + зеленый, синий
     const hairColors = ['#1a1a1a', '#f1c40f', '#debe93', '#2ecc71', '#3498db', '#e74c3c'];
     const hairColor = hairColors[Math.floor(Math.random() * hairColors.length)];
-    
-    // Глаза: жидкое золото или серебро
     const eyeColors = ['#ffd700', '#c0c0c0'];
     const eyeColor = eyeColors[Math.floor(Math.random() * eyeColors.length)];
 
     return `
         <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 70 50 Q 40 150 50 250 L 150 250 Q 160 150 130 50 Z" fill="${hairColor}"/>
+
+            <rect x="90" y="100" width="20" height="50" fill="${skinColor}" stroke="#111" stroke-width="1"/>
             <path d="M 65 140 Q 100 130 135 140 L 145 300 L 55 300 Z" fill="#9b59b6" stroke="#111" stroke-width="1"/>
             <path d="M 80 140 L 120 140 L 100 200 Z" fill="#f1c40f" opacity="0.7"/>
 
-            <rect x="90" y="100" width="20" height="50" fill="${skinColor}" stroke="#111" stroke-width="1"/>
-
-            <path d="M 70 50 Q 40 150 50 250 L 150 250 Q 160 150 130 50 Z" fill="${hairColor}"/>
-
             <path d="M 70 95 L 30 70 L 65 110" fill="${skinColor}" stroke="#111" stroke-width="1"/>
             <path d="M 130 95 L 170 70 L 135 110" fill="${skinColor}" stroke="#111" stroke-width="1"/>
-
             <ellipse cx="100" cy="90" rx="30" ry="45" fill="${skinColor}" stroke="#111" stroke-width="1"/>
 
             <ellipse cx="87" cy="85" rx="6" ry="3" fill="${eyeColor}" stroke="#111"/>
@@ -540,10 +524,9 @@ function generateHobgoblinSVG(gender) {
 }
 
 // ==========================================
-// ГЕНЕРАТОР: ТОРТЛ
+// ИСПРАВЛЕНО: ТОРТЛ (Конечности и передний пластрон)
 // ==========================================
 function generateTortleSVG(gender) {
-    // Цвета черепах (зеленые, коричневые, оливковые)
     const shellColors = ['#1e8449', '#27ae60', '#8a6a42', '#5d6d7e', '#117a65'];
     const skinColors = ['#a2d9ce', '#7dcea0', '#f5cba7', '#b2babb'];
     const shellColor = shellColors[Math.floor(Math.random() * shellColors.length)];
@@ -551,24 +534,28 @@ function generateTortleSVG(gender) {
 
     return `
         <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="100" cy="200" rx="80" ry="90" fill="${shellColor}" stroke="#111" stroke-width="3"/>
+            <ellipse cx="100" cy="180" rx="90" ry="100" fill="${shellColor}" stroke="#111" stroke-width="3"/>
             
-            <path d="M 60 170 L 100 140 L 140 170 L 140 230 L 100 260 L 60 230 Z" fill="none" stroke="rgba(0,0,0,0.3)" stroke-width="4"/>
-            <line x1="100" y1="140" x2="100" y2="110" stroke="rgba(0,0,0,0.3)" stroke-width="4"/>
-            <line x1="60" y1="170" x2="25" y2="150" stroke="rgba(0,0,0,0.3)" stroke-width="4"/>
-            <line x1="140" y1="170" x2="175" y2="150" stroke="rgba(0,0,0,0.3)" stroke-width="4"/>
-            <line x1="60" y1="230" x2="35" y2="260" stroke="rgba(0,0,0,0.3)" stroke-width="4"/>
-            <line x1="140" y1="230" x2="165" y2="260" stroke="rgba(0,0,0,0.3)" stroke-width="4"/>
+            <path d="M 60 250 L 50 300 L 80 300 L 75 250 Z" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            <path d="M 140 250 L 150 300 L 120 300 L 125 250 Z" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            <polygon points="50,300 55,290 60,300" fill="#eee"/> <polygon points="70,300 75,290 80,300" fill="#eee"/>
+            <polygon points="120,300 125,290 130,300" fill="#eee"/> <polygon points="140,300 145,290 150,300" fill="#eee"/>
 
-            <path d="M 85 120 Q 100 90 115 120" fill="${skinColor}" stroke="#111" stroke-width="2"/>
-            <line x1="90" y1="105" x2="110" y2="105" stroke="rgba(0,0,0,0.2)" stroke-width="1.5"/>
-            <line x1="95" y1="115" x2="105" y2="115" stroke="rgba(0,0,0,0.2)" stroke-width="1.5"/>
+            <polygon points="65,120 135,120 145,250 100,270 55,250" fill="#e5c88c" stroke="#8a6a42" stroke-width="4"/>
+            <line x1="65" y1="120" x2="100" y2="160" stroke="#8a6a42" stroke-width="3"/>
+            <line x1="135" y1="120" x2="100" y2="160" stroke="#8a6a42" stroke-width="3"/>
+            <line x1="100" y1="160" x2="100" y2="270" stroke="#8a6a42" stroke-width="3"/>
+            <line x1="55" y1="200" x2="145" y2="200" stroke="#8a6a42" stroke-width="3"/>
 
+            <path d="M 40 140 Q 10 180 20 230" fill="none" stroke="${skinColor}" stroke-width="20" stroke-linecap="round"/>
+            <path d="M 160 140 Q 190 180 180 230" fill="none" stroke="${skinColor}" stroke-width="20" stroke-linecap="round"/>
+            <line x1="15" y1="230" x2="15" y2="245" stroke="#eee" stroke-width="3"/> <line x1="25" y1="230" x2="25" y2="245" stroke="#eee" stroke-width="3"/>
+            <line x1="175" y1="230" x2="175" y2="245" stroke="#eee" stroke-width="3"/> <line x1="185" y1="230" x2="185" y2="245" stroke="#eee" stroke-width="3"/>
+
+            <path d="M 85 100 Q 100 80 115 100 L 110 120 L 90 120 Z" fill="${skinColor}" stroke="#111" stroke-width="2"/>
             <ellipse cx="100" cy="70" rx="25" ry="30" fill="${skinColor}" stroke="#111" stroke-width="2"/>
-
             <circle cx="88" cy="65" r="4" fill="#111"/>
             <circle cx="112" cy="65" r="4" fill="#111"/>
-
             <path d="M 85 85 Q 100 95 115 85" fill="none" stroke="#111" stroke-width="2"/>
         </svg>
     `;
@@ -626,15 +613,13 @@ function generateAasimarSVG(gender) {
 }
 
 // ==========================================
-// ГЕНЕРАТОР: АВЕН
+// ИСПРАВЛЕНО: АВЕН (Шея крепится к телу)
 // ==========================================
 function generateAvenSVG(gender) {
-    // 0 - Ястреб (короткая шея, клюв хищника), 1 - Ибис (длинная шея, длинный клюв)
     const avenType = Math.floor(Math.random() * 2);
     const featherColors = avenType === 0 ? ['#8d6e63', '#5d4037', '#e67e22'] : ['#ecf0f1', '#bdc3c7', '#34495e'];
     const fColor = featherColors[Math.floor(Math.random() * featherColors.length)];
 
-    let neckHeight = avenType === 0 ? 30 : 60;
     let headY = avenType === 0 ? 80 : 50;
 
     let headSVG = avenType === 0 ? `
@@ -652,7 +637,7 @@ function generateAvenSVG(gender) {
             <path d="M 80 140 Q 10 90 20 220 Z" fill="${fColor}" stroke="#111" stroke-width="2"/>
             <path d="M 120 140 Q 190 90 180 220 Z" fill="${fColor}" stroke="#111" stroke-width="2"/>
 
-            <rect x="85" y="${headY + 10}" width="30" height="${neckHeight}" fill="${fColor}" stroke="#111" stroke-width="1.5"/>
+            <rect x="85" y="${headY + 10}" width="30" height="${150 - headY}" fill="${fColor}" stroke="#111" stroke-width="1.5"/>
 
             <path d="M 60 140 L 140 140 L 150 300 L 50 300 Z" fill="#e0ac69" stroke="#111" stroke-width="1.5"/>
             <path d="M 70 140 L 100 170 L 130 140 Z" fill="${fColor}" stroke="#111" stroke-width="1"/>
@@ -663,31 +648,30 @@ function generateAvenSVG(gender) {
 }
 
 // ==========================================
-// ГЕНЕРАТОР: АВТОГНОМ
+// ИСПРАВЛЕНО: АВТОГНОМ (Короткая шея)
 // ==========================================
 function generateAutognomeSVG(gender) {
-    const metalColors = ['#bdc3c7', '#95a5a6', '#d35400', '#f39c12']; // Сталь, медь, латунь
+    const metalColors = ['#bdc3c7', '#95a5a6', '#d35400', '#f39c12'];
     const mColor = metalColors[Math.floor(Math.random() * metalColors.length)];
     const eyeColors = ['#3498db', '#e74c3c', '#2ecc71'];
     const eColor = eyeColors[Math.floor(Math.random() * eyeColors.length)];
 
     return `
         <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
-            <line x1="90" y1="120" x2="90" y2="160" stroke="#333" stroke-width="4"/>
-            <line x1="110" y1="120" x2="110" y2="160" stroke="#333" stroke-width="4"/>
-            <path d="M 95 120 L 105 160 M 105 120 L 95 160" stroke="#7f8c8d" stroke-width="3"/>
+            <line x1="90" y1="120" x2="90" y2="130" stroke="#333" stroke-width="4"/>
+            <line x1="110" y1="120" x2="110" y2="130" stroke="#333" stroke-width="4"/>
+            <path d="M 95 120 L 105 130 M 105 120 L 95 130" stroke="#7f8c8d" stroke-width="3"/>
 
-            <rect x="60" y="160" width="80" height="120" rx="20" fill="${mColor}" stroke="#111" stroke-width="2"/>
+            <rect x="60" y="130" width="80" height="150" rx="20" fill="${mColor}" stroke="#111" stroke-width="2"/>
             
-            <circle cx="100" cy="200" r="20" fill="#111" stroke="#333" stroke-width="3"/>
-            <circle cx="100" cy="200" r="15" fill="none" stroke="${eColor}" stroke-width="2" stroke-dasharray="5 5"/>
-            <circle cx="100" cy="200" r="5" fill="${eColor}"/>
+            <circle cx="100" cy="180" r="20" fill="#111" stroke="#333" stroke-width="3"/>
+            <circle cx="100" cy="180" r="15" fill="none" stroke="${eColor}" stroke-width="2" stroke-dasharray="5 5"/>
+            <circle cx="100" cy="180" r="5" fill="${eColor}"/>
 
-            <circle cx="50" cy="180" r="15" fill="#7f8c8d" stroke="#111" stroke-width="2"/>
-            <circle cx="150" cy="180" r="15" fill="#7f8c8d" stroke="#111" stroke-width="2"/>
+            <circle cx="50" cy="150" r="15" fill="#7f8c8d" stroke="#111" stroke-width="2"/>
+            <circle cx="150" cy="150" r="15" fill="#7f8c8d" stroke="#111" stroke-width="2"/>
 
             <rect x="70" y="50" width="60" height="70" rx="30" fill="${mColor}" stroke="#111" stroke-width="2"/>
-            
             <polygon points="70,80 40,60 70,90" fill="#7f8c8d" stroke="#111" stroke-width="1.5"/>
             <polygon points="130,80 160,60 130,90" fill="#7f8c8d" stroke="#111" stroke-width="1.5"/>
 
@@ -768,6 +752,711 @@ function generateVedalkenSVG(gender) {
             <ellipse cx="115" cy="85" rx="7" ry="4" fill="${eyeColor}" stroke="#111"/>
 
             <line x1="90" y1="118" x2="110" y2="118" stroke="#111" stroke-width="1.5"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: ВЕРДАН
+// ==========================================
+function generateVerdanSVG(gender) {
+    const isMale = gender === 'Мужчина';
+    const shades = ['#2ecc71', '#1e8449', '#ecf0f1', '#254118', '#aab7b8']; // Нефритовый, темно-зеленый, белый, эбеновый, бледный
+    const color = shades[Math.floor(Math.random() * shades.length)];
+    
+    // Мужчины: почти нет волос. Женщины: жесткие дикие волосы
+    let hairSVG = '';
+    if (!isMale) {
+        hairSVG = `<path d="M 60 50 Q 100 10 140 50 Q 160 80 140 110 Q 100 140 60 110 Q 40 80 60 50 Z" fill="rgba(0,0,0,0.8)"/>`;
+    }
+
+    // Случайная форма ушей (от эльфийских до огромных загнутых с кольцом)
+    const earType = Math.floor(Math.random() * 2);
+    let earsSVG = earType === 0 
+        ? `<path d="M 70 80 L 20 60 L 60 100" fill="${color}" stroke="#111" stroke-width="1.5"/><path d="M 130 80 L 180 60 L 140 100" fill="${color}" stroke="#111" stroke-width="1.5"/>`
+        : `
+          <path d="M 70 80 Q 0 40 10 120 Q 30 130 65 100" fill="${color}" stroke="#111" stroke-width="1.5"/>
+          <path d="M 130 80 Q 200 40 190 120 Q 170 130 135 100" fill="${color}" stroke="#111" stroke-width="1.5"/>
+          <circle cx="100" cy="110" r="45" fill="none" stroke="#f1c40f" stroke-width="3"/>
+        `;
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            ${hairSVG}
+            ${earsSVG}
+            
+            <rect x="85" y="110" width="30" height="40" fill="${color}" stroke="#111" stroke-width="1.5"/>
+            <path d="M 50 150 L 150 150 L 160 300 L 40 300 Z" fill="#34495e" stroke="#111" stroke-width="1.5"/>
+
+            <ellipse cx="100" cy="85" rx="35" ry="40" fill="${color}" stroke="#111" stroke-width="1.5"/>
+            <ellipse cx="85" cy="80" rx="8" ry="5" fill="#fff" stroke="#111"/>
+            <circle cx="85" cy="80" r="3" fill="#111"/>
+            <ellipse cx="115" cy="80" rx="8" ry="5" fill="#fff" stroke="#111"/>
+            <circle cx="115" cy="80" r="3" fill="#111"/>
+            
+            <path d="M 90 105 Q 100 110 110 105" fill="none" stroke="rgba(0,0,0,0.6)" stroke-width="2"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: ГИБРИД СИМИКОВ
+// ==========================================
+function generateSimicHybridSVG(gender) {
+    const skinColor = '#a2d9ce'; // Базовая бледная кожа
+    const mutation = Math.floor(Math.random() * 4); // 0-Крылья манты, 1-Клешни краба, 2-Щупальца, 3-Пасть акулы
+    
+    let backgroundMutation = '';
+    let foregroundMutation = '';
+
+    if (mutation === 0) {
+        // Крылья-плавники манты (Сзади)
+        backgroundMutation = `
+            <path d="M 80 140 Q 10 100 20 220 Q 50 200 80 250" fill="#2980b9" stroke="#111" opacity="0.8"/>
+            <path d="M 120 140 Q 190 100 180 220 Q 150 200 120 250" fill="#2980b9" stroke="#111" opacity="0.8"/>
+        `;
+    } else if (mutation === 1) {
+        // Клешни краба (Спереди вместо рук)
+        foregroundMutation = `
+            <path d="M 40 150 Q 10 180 20 220 Z" fill="#c0392b" stroke="#111" stroke-width="2"/>
+            <path d="M 20 220 Q 30 250 10 270 Q 5 240 20 220" fill="#c0392b" stroke="#111"/>
+            <path d="M 20 220 Q 0 230 -5 210 Q 5 200 20 220" fill="#c0392b" stroke="#111"/>
+
+            <path d="M 160 150 Q 190 180 180 220 Z" fill="#c0392b" stroke="#111" stroke-width="2"/>
+            <path d="M 180 220 Q 170 250 190 270 Q 195 240 180 220" fill="#c0392b" stroke="#111"/>
+            <path d="M 180 220 Q 200 230 205 210 Q 195 200 180 220" fill="#c0392b" stroke="#111"/>
+        `;
+    } else if (mutation === 2) {
+        // Щупальца на лице
+        foregroundMutation = `
+            <path d="M 85 105 Q 70 140 85 160" fill="none" stroke="#8e44ad" stroke-width="8" stroke-linecap="round"/>
+            <path d="M 100 105 Q 100 150 110 170" fill="none" stroke="#8e44ad" stroke-width="8" stroke-linecap="round"/>
+            <path d="M 115 105 Q 130 140 115 160" fill="none" stroke="#8e44ad" stroke-width="8" stroke-linecap="round"/>
+        `;
+    }
+
+    let mouthSVG = mutation === 3 
+        ? `<path d="M 80 100 Q 100 120 120 100 Z" fill="#111"/><polygon points="85,100 88,110 91,100" fill="#fff"/><polygon points="95,100 98,112 101,100" fill="#fff"/><polygon points="105,100 108,112 111,100" fill="#fff"/><polygon points="115,100 118,110 121,100" fill="#fff"/>` 
+        : `<line x1="90" y1="105" x2="110" y2="105" stroke="#111" stroke-width="2"/>`;
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            ${backgroundMutation}
+            
+            <rect x="85" y="110" width="30" height="40" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            <path d="M 50 150 L 150 150 L 160 300 L 40 300 Z" fill="${skinColor}" opacity="0.9" stroke="#111" stroke-width="1.5"/>
+
+            <ellipse cx="100" cy="85" rx="35" ry="40" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            <circle cx="85" cy="80" r="5" fill="#111"/>
+            <circle cx="115" cy="80" r="5" fill="#111"/>
+            
+            ${mouthSVG}
+            ${foregroundMutation}
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: ГИТ
+// ==========================================
+function generateGithSVG(gender) {
+    const skinColors = ['#F4D03F', '#B18904', '#AAB7B8', '#7D6608'];
+    const skinColor = skinColors[Math.floor(Math.random() * skinColors.length)];
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <rect x="90" y="110" width="20" height="60" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            
+            <path d="M 65 170 L 135 170 L 140 300 L 60 300 Z" fill="#581845" stroke="#111" stroke-width="1.5"/>
+            <path d="M 65 170 L 40 250" stroke="${skinColor}" stroke-width="10" stroke-linecap="round"/>
+            <path d="M 135 170 L 160 250" stroke="${skinColor}" stroke-width="10" stroke-linecap="round"/>
+
+            <path d="M 75 80 L 20 65 L 70 95" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            <path d="M 125 80 L 180 65 L 130 95" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+
+            <polygon points="70,50 130,50 120,120 100,135 80,120" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+
+            <polyline points="70,90 85,110 80,120" fill="none" stroke="rgba(0,0,0,0.3)" stroke-width="2"/>
+            <polyline points="130,90 115,110 120,120" fill="none" stroke="rgba(0,0,0,0.3)" stroke-width="2"/>
+
+            <rect x="75" y="75" width="15" height="5" fill="#111"/>
+            <rect x="110" y="75" width="15" height="5" fill="#111"/>
+            <circle cx="82" cy="77" r="2" fill="#fff"/>
+            <circle cx="117" cy="77" r="2" fill="#fff"/>
+
+            <line x1="95" y1="100" x2="98" y2="105" stroke="#111" stroke-width="2"/>
+            <line x1="105" y1="100" x2="102" y2="105" stroke="#111" stroke-width="2"/>
+
+            <line x1="90" y1="120" x2="110" y2="120" stroke="#111" stroke-width="2"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ИСПРАВЛЕНО: ГИФФ (Добавлены вариации щетины)
+// ==========================================
+function generateGiffSVG(gender) {
+    const skinColor = '#85929E'; 
+    const hasStubble = Math.random() > 0.5; // 50% шанс на армейскую щетину
+
+    let stubbleSVG = '';
+    if (hasStubble) {
+        stubbleSVG = `
+            <path d="M 70 45 Q 100 35 130 45" fill="none" stroke="#2C3E50" stroke-width="4" stroke-dasharray="2 4" opacity="0.6"/>
+            <path d="M 65 110 Q 100 135 135 110" fill="none" stroke="#2C3E50" stroke-width="4" stroke-dasharray="2 6" opacity="0.4"/>
+            <path d="M 75 125 Q 100 145 125 125" fill="none" stroke="#2C3E50" stroke-width="4" stroke-dasharray="2 6" opacity="0.4"/>
+        `;
+    }
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="130" width="160" height="170" rx="30" fill="#1A5276" stroke="#111" stroke-width="2"/>
+            <path d="M 60 130 L 140 130 L 110 300 L 90 300 Z" fill="#F1C40F" opacity="0.8"/>
+
+            <circle cx="65" cy="50" r="10" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            <circle cx="135" cy="50" r="10" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+
+            <ellipse cx="100" cy="85" rx="45" ry="50" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            
+            ${stubbleSVG}
+
+            <circle cx="75" cy="65" r="3" fill="#111"/>
+            <circle cx="125" cy="65" r="3" fill="#111"/>
+
+            <ellipse cx="100" cy="110" rx="40" ry="25" fill="#AEB6BF" stroke="#111" stroke-width="1.5"/>
+            <ellipse cx="80" cy="100" rx="5" ry="8" fill="#111"/> 
+            <ellipse cx="120" cy="100" rx="5" ry="8" fill="#111"/> 
+            
+            <path d="M 70 120 Q 100 135 130 120" fill="none" stroke="#111" stroke-width="2"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ИСПРАВЛЕНО: ГНОМ (Сделаны ниже, добавлены вариации волос/бород)
+// ==========================================
+function generateGnomeSVG(gender) {
+    const isMale = gender === 'Мужчина';
+    const skinColors = ['#e0ac69', '#d39e58', '#c68642', '#b87333'];
+    const skinColor = skinColors[Math.floor(Math.random() * skinColors.length)];
+    const hairColors = ['#d4ac0d', '#f1c40f', '#e67e22', '#a04000', '#784212'];
+    const hairColor = hairColors[Math.floor(Math.random() * hairColors.length)];
+    const clothColors = ['#8d6e63', '#5d4037', '#795548', '#3e2723', '#27ae60'];
+    const clothColor = clothColors[Math.floor(Math.random() * clothColors.length)];
+    
+    // Вариации причесок: 0 - торчат вверх, 1 - в стороны, 2 - кудри
+    const hairStyle = Math.floor(Math.random() * 3);
+    let hairSVG = '';
+    if (hairStyle === 0) {
+        hairSVG = `<path d="M 40 130 L 50 80 L 70 110 L 100 70 L 130 110 L 150 80 L 160 130 Z" fill="${hairColor}"/>`;
+    } else if (hairStyle === 1) {
+        hairSVG = `<path d="M 30 160 L 50 120 L 70 140 L 100 100 L 130 140 L 150 120 L 170 160 Z" fill="${hairColor}"/>`;
+    } else {
+        hairSVG = `<circle cx="70" cy="140" r="25" fill="${hairColor}"/><circle cx="130" cy="140" r="25" fill="${hairColor}"/><circle cx="100" cy="110" r="30" fill="${hairColor}"/>`;
+    }
+
+    let beardSVG = '';
+    if (isMale) {
+        const beardStyle = Math.floor(Math.random() * 2);
+        if (beardStyle === 0) {
+            // Острая борода
+            beardSVG = `<path d="M 65 180 Q 100 240 135 180 Q 120 260 100 290 Q 80 260 65 180 Z" fill="${hairColor}" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>`;
+        } else {
+            // Раздвоенная борода
+            beardSVG = `<path d="M 65 180 Q 80 260 70 280 Q 100 240 130 280 Q 120 260 135 180 Z" fill="${hairColor}" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>`;
+        }
+    }
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            ${hairSVG}
+
+            <path d="M 60 220 L 140 220 L 150 300 L 50 300 Z" fill="${clothColor}" stroke="#111" stroke-width="1.5"/>
+            <circle cx="100" cy="240" r="5" fill="#f1c40f"/>
+            <circle cx="100" cy="270" r="5" fill="#e74c3c"/>
+
+            <rect x="90" y="190" width="20" height="40" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+
+            <ellipse cx="100" cy="155" rx="45" ry="40" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+
+            <path d="M 95 155 Q 100 180 105 155 Z" fill="rgba(0,0,0,0.15)"/>
+            <path d="M 90 175 Q 100 185 110 175" fill="none" stroke="#111" stroke-width="1.5"/>
+
+            <circle cx="80" cy="145" r="6" fill="#fff" stroke="#111"/>
+            <circle cx="80" cy="145" r="3" fill="#3498db"/>
+            <circle cx="120" cy="145" r="6" fill="#fff" stroke="#111"/>
+            <circle cx="120" cy="145" r="3" fill="#3498db"/>
+
+            <path d="M 75 180 Q 100 200 125 180" fill="none" stroke="#111" stroke-width="2"/>
+            <path d="M 75 180 Q 100 200 125 180 Q 100 190 75 180" fill="#fff"/>
+
+            ${beardSVG}
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: ГРУНГ (Цвет зависит от касты)
+// ==========================================
+function generateGrungSVG(gender) {
+    // Цвета каст: Зеленый, Синий, Фиолетовый, Красный, Оранжевый, Золотой
+    const castes = ['#27ae60', '#2980b9', '#8e44ad', '#c0392b', '#e67e22', '#f1c40f'];
+    const grungColor = castes[Math.floor(Math.random() * castes.length)];
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="100" cy="220" rx="40" ry="50" fill="${grungColor}" stroke="#111" stroke-width="2"/>
+            <ellipse cx="100" cy="225" rx="25" ry="40" fill="rgba(255,255,255,0.3)"/> <path d="M 60 220 Q 30 250 50 300" fill="none" stroke="${grungColor}" stroke-width="15" stroke-linecap="round"/>
+            <path d="M 140 220 Q 170 250 150 300" fill="none" stroke="${grungColor}" stroke-width="15" stroke-linecap="round"/>
+            <circle cx="45" cy="295" r="5" fill="#111"/><circle cx="55" cy="295" r="5" fill="#111"/>
+            <circle cx="145" cy="295" r="5" fill="#111"/><circle cx="155" cy="295" r="5" fill="#111"/>
+
+            <ellipse cx="100" cy="150" rx="55" ry="35" fill="${grungColor}" stroke="#111" stroke-width="2"/>
+            
+            <circle cx="70" cy="125" r="18" fill="${grungColor}" stroke="#111" stroke-width="2"/>
+            <circle cx="70" cy="125" r="14" fill="#000"/>
+            <circle cx="73" cy="122" r="4" fill="#fff"/> <circle cx="130" cy="125" r="18" fill="${grungColor}" stroke="#111" stroke-width="2"/>
+            <circle cx="130" cy="125" r="14" fill="#000"/>
+            <circle cx="133" cy="122" r="4" fill="#fff"/> <path d="M 55 160 Q 100 180 145 160" fill="none" stroke="#111" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: ДЖЕНАЗИ (Огонь, Вода, Земля, Воздух)
+// ==========================================
+function generateGenasiSVG(gender) {
+    const isMale = gender === 'Мужчина';
+    const elements = ['fire', 'water', 'earth', 'air'];
+    const element = elements[Math.floor(Math.random() * elements.length)];
+
+    let skinColor, hairSVG, bodySVG, fxSVG = '';
+
+    if (element === 'fire') {
+        skinColor = '#e74c3c'; // Красный
+        bodySVG = `<path d="M 60 140 L 140 140 L 150 300 L 50 300 Z" fill="#2c3e50" stroke="#111" stroke-width="1.5"/>`; // Легкие
+        hairSVG = `<path d="M 70 100 Q 50 30 100 10 Q 150 30 130 100 Z" fill="#f1c40f" opacity="0.9"/><path d="M 80 100 Q 70 50 100 30 Q 130 50 120 100 Z" fill="#e67e22"/>`; // Пламя
+    } else if (element === 'water') {
+        skinColor = '#3498db'; // Синий
+        bodySVG = `<rect x="50" y="140" width="100" height="160" rx="20" fill="#1ABC9C" stroke="#111" stroke-width="1.5"/>`; // Тяжелее
+        hairSVG = `<path d="M 60 50 Q 30 150 50 200 L 150 200 Q 170 150 140 50 Z" fill="#2980b9" opacity="0.8"/>`; // Волны
+    } else if (element === 'earth') {
+        skinColor = '#7f8c8d'; // Серый
+        bodySVG = `<rect x="40" y="140" width="120" height="160" rx="10" fill="#5d4037" stroke="#111" stroke-width="1.5"/>`; // Очень плотные
+        hairSVG = `<polygon points="60,100 70,50 90,60 100,40 110,60 130,50 140,100" fill="#333"/>`; // Кристаллы/камни
+        fxSVG = `<path d="M 80 110 L 90 120 M 110 90 L 120 100" stroke="rgba(0,0,0,0.3)" stroke-width="2"/>`; // Трещины
+    } else { // air
+        skinColor = '#d6eaf8'; // Бледно-голубой/белый
+        bodySVG = `<path d="M 70 140 L 130 140 L 140 300 L 60 300 Z" fill="#ecf0f1" stroke="#111" stroke-width="1.5"/>`; // Очень легкие
+        hairSVG = `<ellipse cx="100" cy="60" rx="50" ry="30" fill="#aed6f1" opacity="0.7"/><ellipse cx="120" cy="50" rx="30" ry="20" fill="#ebf5fb" opacity="0.8"/>`; // Облака
+    }
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            ${hairSVG}
+            <rect x="85" y="100" width="30" height="50" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            ${bodySVG}
+            <ellipse cx="100" cy="90" rx="35" ry="45" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            <ellipse cx="85" cy="85" rx="6" ry="4" fill="#fff" stroke="#111"/>
+            <circle cx="85" cy="85" r="2" fill="#111"/>
+            <ellipse cx="115" cy="85" rx="6" ry="4" fill="#fff" stroke="#111"/>
+            <circle cx="115" cy="85" r="2" fill="#111"/>
+            <path d="M 90 115 Q 100 120 110 115" fill="none" stroke="#111" stroke-width="1.5"/>
+            ${fxSVG}
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: ИЗМЕНЯЮЩИЙСЯ (Истинная форма)
+// ==========================================
+// Примечание: Маскировка генерируется в функции showPortrait
+function generateChangelingTrueSVG(gender) {
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 60 50 Q 30 150 50 220 L 150 220 Q 170 150 140 50 Z" fill="#e5e7e9"/>
+
+            <rect x="90" y="100" width="20" height="50" fill="#ffffff" stroke="#ddd" stroke-width="1.5"/>
+            <path d="M 65 140 Q 100 130 135 140 L 145 300 L 55 300 Z" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="1.5"/>
+
+            <ellipse cx="100" cy="90" rx="30" ry="45" fill="#ffffff" stroke="#ddd" stroke-width="1.5"/>
+
+            <ellipse cx="85" cy="85" rx="8" ry="4" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="1"/>
+            <ellipse cx="115" cy="85" rx="8" ry="4" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="1"/>
+
+            <path d="M 100 85 L 100 100 L 102 100" fill="none" stroke="#ddd" stroke-width="1.5"/>
+            <path d="M 90 110 Q 100 112 110 110" fill="none" stroke="#bdc3c7" stroke-width="1.5"/>
+            
+            <path d="M 70 50 Q 100 30 130 50" fill="none" stroke="#e5e7e9" stroke-width="15" stroke-linecap="round"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: КАЛАШТАР
+// ==========================================
+function generateKalashtarSVG(gender) {
+    const skinColor = '#fdd9b5';
+    const auraColor = ['rgba(155, 89, 182, 0.4)', 'rgba(52, 152, 219, 0.4)'][Math.floor(Math.random()*2)];
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="100" cy="80" rx="60" ry="70" fill="${auraColor}" filter="blur(5px)"/>
+            
+            <circle cx="100" cy="80" r="45" fill="#2c3e50" /> <rect x="85" y="110" width="30" height="50" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            <path d="M 50 150 L 150 150 L 160 300 L 40 300 Z" fill="#7f8c8d" stroke="#111" stroke-width="1.5"/>
+
+            <polygon points="70,50 130,50 135,90 100,140 65,90" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+
+            <ellipse cx="85" cy="90" rx="7" ry="4" fill="#fff" stroke="#111"/>
+            <circle cx="85" cy="90" r="2" fill="#8e44ad"/> <ellipse cx="115" cy="90" rx="7" ry="4" fill="#fff" stroke="#111"/>
+            <circle cx="115" cy="90" r="2" fill="#8e44ad"/>
+
+            <line x1="75" y1="105" x2="85" y2="115" stroke="rgba(0,0,0,0.2)" stroke-width="1.5"/>
+            <line x1="125" y1="105" x2="115" y2="115" stroke="rgba(0,0,0,0.2)" stroke-width="1.5"/>
+
+            <path d="M 90 125 Q 100 130 110 125" fill="none" stroke="#b05245" stroke-width="2"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: КЕНДЕР
+// ==========================================
+function generateKenderSVG(gender) {
+    const skinColor = '#ffdbac';
+    const hairColor = ['#d4ac0d', '#a04000', '#271c19'][Math.floor(Math.random() * 3)];
+    // Кендеры часто носят чубчик (topknot)
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 85 40 Q 100 10 115 40 Z" fill="${hairColor}"/>
+            <circle cx="100" cy="80" r="40" fill="${hairColor}"/>
+
+            <path d="M 65 180 L 135 180 L 145 300 L 55 300 Z" fill="#27ae60" stroke="#111" stroke-width="1.5"/>
+
+            <rect x="90" y="150" width="20" height="40" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+
+            <path d="M 70 135 L 30 120 L 65 150" fill="${skinColor}" stroke="#111" stroke-width="1"/>
+            <path d="M 130 135 L 170 120 L 135 150" fill="${skinColor}" stroke="#111" stroke-width="1"/>
+
+            <ellipse cx="100" cy="120" rx="35" ry="40" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+
+            <circle cx="85" cy="115" r="7" fill="#fff" stroke="#111"/>
+            <circle cx="85" cy="115" r="3" fill="#2c3e50"/>
+            <circle cx="115" cy="115" r="7" fill="#fff" stroke="#111"/>
+            <circle cx="115" cy="115" r="3" fill="#2c3e50"/>
+
+            <path d="M 90 140 Q 100 150 110 140" fill="none" stroke="#111" stroke-width="1.5"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: КЕНКУ
+// ==========================================
+function generateKenkuSVG(gender) {
+    const fColor = ['#1a1a1a', '#1b263b', '#17202a'][Math.floor(Math.random()*3)]; // Черные/темно-синие перья
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 80 250 L 70 300 M 80 250 L 80 300 M 80 250 L 90 300" stroke="#d4ac0d" stroke-width="4" stroke-linecap="round"/>
+            <path d="M 120 250 L 110 300 M 120 250 L 120 300 M 120 250 L 130 300" stroke="#d4ac0d" stroke-width="4" stroke-linecap="round"/>
+
+            <path d="M 60 140 L 140 140 L 130 250 L 70 250 Z" fill="#5d4037" stroke="#111" stroke-width="1.5"/>
+
+            <path d="M 60 150 Q 30 180 40 220" fill="none" stroke="#111" stroke-width="6"/>
+            <path d="M 40 220 L 30 240 M 40 220 L 40 245 M 40 220 L 50 240" stroke="#d4ac0d" stroke-width="3" stroke-linecap="round"/>
+            
+            <path d="M 140 150 Q 170 180 160 220" fill="none" stroke="#111" stroke-width="6"/>
+            <path d="M 160 220 L 150 240 M 160 220 L 160 245 M 160 220 L 170 240" stroke="#d4ac0d" stroke-width="3" stroke-linecap="round"/>
+
+            <circle cx="100" cy="80" r="35" fill="${fColor}" stroke="#111" stroke-width="1.5"/>
+            
+            <path d="M 125 75 Q 170 65 180 85 Q 160 95 125 90 Z" fill="#333" stroke="#111" stroke-width="1.5"/>
+            
+            <circle cx="115" cy="70" r="6" fill="#111"/>
+            <circle cx="117" cy="68" r="2" fill="#fff"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: КЕНТАВР
+// ==========================================
+function generateCentaurSVG(gender) {
+    const skinColor = '#e0ac69';
+    const horseColor = ['#5d4037', '#8d6e63', '#271c19', '#d4ac0d'][Math.floor(Math.random()*4)]; // Масти лошадей
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="100" cy="240" rx="80" ry="45" fill="${horseColor}" stroke="#111" stroke-width="2"/>
+            <rect x="50" y="270" width="15" height="30" fill="${horseColor}" stroke="#111" stroke-width="1"/>
+            <rect x="48" y="295" width="19" height="5" fill="#111"/> <rect x="135" y="270" width="15" height="30" fill="${horseColor}" stroke="#111" stroke-width="1"/>
+            <rect x="133" y="295" width="19" height="5" fill="#111"/> <path d="M 175 240 Q 195 260 185 290" fill="none" stroke="#111" stroke-width="10" stroke-linecap="round"/>
+
+            <path d="M 60 140 L 110 140 L 120 220 L 50 220 Z" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            <path d="M 60 180 L 115 180" stroke="rgba(0,0,0,0.2)" stroke-width="2"/> <rect x="75" y="110" width="20" height="40" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+
+            <path d="M 70 50 Q 50 100 60 130 L 110 130 Q 120 100 100 50 Z" fill="#2c3e50"/> <path d="M 65 95 L 25 80 L 60 110" fill="${skinColor}" stroke="#111" stroke-width="1"/>
+            <path d="M 105 95 L 145 80 L 110 110" fill="${skinColor}" stroke="#111" stroke-width="1"/>
+
+            <ellipse cx="85" cy="90" rx="25" ry="35" fill="${skinColor}" stroke="#111" stroke-width="1.5"/>
+            
+            <ellipse cx="75" cy="85" rx="5" ry="3" fill="#fff" stroke="#111"/>
+            <circle cx="75" cy="85" r="2" fill="#111"/>
+            <ellipse cx="95" cy="85" rx="5" ry="3" fill="#fff" stroke="#111"/>
+            <circle cx="95" cy="85" r="2" fill="#111"/>
+
+            <path d="M 80 110 Q 85 115 90 110" fill="none" stroke="#111" stroke-width="1.5"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: ИЗМЕНЯЮЩИЙСЯ (Логика смены облика)
+// ==========================================
+function generateChangelingLogic(gender, npc) {
+    // Если маскировка еще не создана
+    if (!npc.changelingTrueForm) {
+        npc.changelingTrueForm = generateChangelingTrueSVG(gender);
+        
+        // Выбираем случайную расу для маскировки (кроме самого себя)
+        const availableRaces = Object.keys(raceGenerators).filter(r => r !== 'изменяющийся' && r !== 'эльф (астральный)');
+        const randomRace = availableRaces[Math.floor(Math.random() * availableRaces.length)];
+        
+        // Генерируем маскировку
+        npc.changelingDisguiseForm = raceGenerators[randomRace](gender, npc);
+        
+        // Начинаем с истинной формы
+        npc.showTrueForm = true;
+    } else {
+        // При каждом последующем клике переключаем форму
+        npc.showTrueForm = !npc.showTrueForm;
+    }
+    
+    // Возвращаем нужную SVG
+    return npc.showTrueForm ? npc.changelingTrueForm : npc.changelingDisguiseForm;
+}
+
+// Истинная форма Изменяющегося
+function generateChangelingTrueSVG(gender) {
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 60 50 Q 30 150 50 220 L 150 220 Q 170 150 140 50 Z" fill="#e5e7e9"/>
+
+            <rect x="90" y="100" width="20" height="50" fill="#ffffff" stroke="#ddd" stroke-width="1.5"/>
+            <path d="M 65 140 Q 100 130 135 140 L 145 300 L 55 300 Z" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="1.5"/>
+
+            <ellipse cx="100" cy="90" rx="30" ry="45" fill="#ffffff" stroke="#ddd" stroke-width="1.5"/>
+
+            <ellipse cx="85" cy="85" rx="8" ry="4" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="1"/>
+            <ellipse cx="115" cy="85" rx="8" ry="4" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="1"/>
+
+            <path d="M 100 85 L 100 100 L 102 100" fill="none" stroke="#ddd" stroke-width="1.5"/>
+            <path d="M 90 110 Q 100 112 110 110" fill="none" stroke="#bdc3c7" stroke-width="1.5"/>
+            
+            <path d="M 70 50 Q 100 30 130 50" fill="none" stroke="#e5e7e9" stroke-width="15" stroke-linecap="round"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: КОВАНЫЙ
+// ==========================================
+function generateWarforgedSVG(gender) {
+    const frameColors = ['#5d4037', '#7f8c8d', '#2c3e50']; // Дерево, камень, сталь
+    const plateColors = ['#bdc3c7', '#95a5a6', '#d35400', '#273746']; // Броня
+    const eyeColors = ['#e74c3c', '#3498db', '#f1c40f', '#2ecc71']; // Кристаллы
+    
+    const frame = frameColors[Math.floor(Math.random() * frameColors.length)];
+    const plate = plateColors[Math.floor(Math.random() * plateColors.length)];
+    const eye = eyeColors[Math.floor(Math.random() * eyeColors.length)];
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <rect x="85" y="100" width="30" height="50" fill="${frame}" stroke="#111" stroke-width="2"/>
+            <path d="M 90 100 L 95 150 M 100 100 L 105 150 M 110 100 L 105 150" fill="none" stroke="#8d6e63" stroke-width="2"/> <path d="M 40 140 L 160 140 L 140 220 L 100 250 L 60 220 Z" fill="${plate}" stroke="#111" stroke-width="2"/>
+            <path d="M 60 220 L 140 220 L 130 300 L 70 300 Z" fill="${plate}" stroke="#111" stroke-width="2"/>
+            <circle cx="60" cy="160" r="15" fill="${frame}" stroke="#111" stroke-width="2"/>
+            <circle cx="140" cy="160" r="15" fill="${frame}" stroke="#111" stroke-width="2"/>
+
+            <path d="M 65 80 Q 100 30 135 80 L 130 105 L 70 105 Z" fill="${plate}" stroke="#111" stroke-width="2"/>
+            
+            <path d="M 65 80 Q 100 95 135 80" fill="none" stroke="#111" stroke-width="4"/>
+            
+            <circle cx="85" cy="85" r="5" fill="${eye}"/>
+            <circle cx="115" cy="85" r="5" fill="${eye}"/>
+
+            <path d="M 75 105 L 125 105 L 115 130 L 85 130 Z" fill="${frame}" stroke="#111" stroke-width="2"/>
+            <line x1="85" y1="115" x2="115" y2="115" stroke="#111" stroke-width="2"/> <circle cx="75" cy="105" r="4" fill="${plate}" stroke="#111"/>
+            <circle cx="125" cy="105" r="4" fill="${plate}" stroke="#111"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: ЛЕОНИН
+// ==========================================
+function generateLeoninSVG(gender) {
+    const isMale = gender === 'Мужчина';
+    const furColors = ['#a67c00', '#8d5524', '#c68642'];
+    const furColor = furColors[Math.floor(Math.random() * furColors.length)];
+    
+    // Грива: у мужчин шанс 80%, у женщин 20%
+    const hasMane = isMale ? Math.random() > 0.2 : Math.random() > 0.8;
+    const maneColors = ['#d4ac0d', '#111111', '#5d4037', '#e67e22'];
+    const maneColor = maneColors[Math.floor(Math.random() * maneColors.length)];
+
+    let maneSVG = '';
+    if (hasMane) {
+        maneSVG = `<circle cx="100" cy="90" r="60" fill="${maneColor}"/>
+                   <path d="M 40 90 Q 100 180 160 90 Z" fill="${maneColor}"/>`;
+    }
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            ${maneSVG}
+
+            <path d="M 30 150 Q 100 120 170 150 L 160 300 L 40 300 Z" fill="${furColor}" stroke="#111" stroke-width="2"/>
+            
+            <path d="M 30 180 Q 10 220 20 260" fill="none" stroke="${furColor}" stroke-width="20" stroke-linecap="round"/>
+            <path d="M 170 180 Q 190 220 180 260" fill="none" stroke="${furColor}" stroke-width="20" stroke-linecap="round"/>
+            <path d="M 15 260 L 10 275 M 20 260 L 20 275 M 25 260 L 30 275" stroke="#eee" stroke-width="3"/>
+            <path d="M 185 260 L 190 275 M 180 260 L 180 275 M 175 260 L 170 275" stroke="#eee" stroke-width="3"/>
+
+            <rect x="80" y="100" width="40" height="50" fill="${furColor}" stroke="#111" stroke-width="2"/>
+
+            <ellipse cx="100" cy="85" rx="40" ry="45" fill="${furColor}" stroke="#111" stroke-width="2"/>
+            <polygon points="65,60 50,30 85,50" fill="${furColor}" stroke="#111" stroke-width="1.5"/>
+            <polygon points="135,60 150,30 115,50" fill="${furColor}" stroke="#111" stroke-width="1.5"/>
+
+            <path d="M 70 75 Q 85 80 90 75" fill="none" stroke="#111" stroke-width="3"/>
+            <path d="M 130 75 Q 115 80 110 75" fill="none" stroke="#111" stroke-width="3"/>
+            <circle cx="80" cy="82" r="4" fill="#f1c40f"/><circle cx="80" cy="82" r="1.5" fill="#111"/>
+            <circle cx="120" cy="82" r="4" fill="#f1c40f"/><circle cx="120" cy="82" r="1.5" fill="#111"/>
+
+            <polygon points="90,105 110,105 100,115" fill="#3e2723"/>
+            <path d="M 90 120 Q 100 115 100 115 Q 100 115 110 120" fill="none" stroke="#111" stroke-width="2"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: ЛОКАТА
+// ==========================================
+function generateLocathahSVG(gender) {
+    // Охристая кожа с зеленым/желтым
+    const skinColors = ['#c0a040', '#a0b040', '#d4ac0d'];
+    const skinColor = skinColors[Math.floor(Math.random() * skinColors.length)];
+    const bellyColor = '#ba4a00'; // Ржавая бугристая кожа
+    const finColor = ['#27ae60', '#a04000', '#d35400'][Math.floor(Math.random() * 3)];
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 100 40 Q 60 10 40 80 Z" fill="${finColor}" stroke="#111" stroke-width="1.5"/>
+            <path d="M 100 40 Q 140 10 160 80 Z" fill="${finColor}" stroke="#111" stroke-width="1.5"/>
+            <path d="M 50 180 Q 20 200 40 240 Z" fill="${finColor}" opacity="0.8"/>
+            <path d="M 150 180 Q 180 200 160 240 Z" fill="${finColor}" opacity="0.8"/>
+
+            <ellipse cx="100" cy="220" rx="60" ry="70" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            <ellipse cx="100" cy="230" rx="45" ry="55" fill="${bellyColor}"/>
+            <circle cx="85" cy="200" r="5" fill="rgba(0,0,0,0.2)"/><circle cx="115" cy="210" r="4" fill="rgba(0,0,0,0.2)"/>
+            <circle cx="100" cy="240" r="6" fill="rgba(0,0,0,0.2)"/><circle cx="80" cy="250" r="4" fill="rgba(0,0,0,0.2)"/>
+
+            <rect x="85" y="140" width="30" height="30" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+
+            <ellipse cx="100" cy="110" rx="55" ry="40" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            
+            <circle cx="50" cy="105" r="12" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            <circle cx="48" cy="105" r="10" fill="#f1c40f"/>
+            <circle cx="46" cy="105" r="4" fill="#111"/>
+            
+            <circle cx="150" cy="105" r="12" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            <circle cx="152" cy="105" r="10" fill="#f1c40f"/>
+            <circle cx="154" cy="105" r="4" fill="#111"/>
+
+            <path d="M 70 130 Q 100 145 130 130" fill="none" stroke="#111" stroke-width="3"/>
+            <path d="M 90 85 Q 100 90 110 85 M 95 95 Q 100 100 105 95" fill="none" stroke="rgba(0,0,0,0.2)" stroke-width="2"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: ЛОКСОДОН
+// ==========================================
+function generateLoxodonSVG(gender) {
+    const skinColor = '#7f8c8d'; // Серая морщинистая кожа
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 60 70 Q 0 40 10 150 Q 30 160 60 120" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            <path d="M 140 70 Q 200 40 190 150 Q 170 160 140 120" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+
+            <path d="M 30 130 Q 100 110 170 130 L 180 300 L 20 300 Z" fill="#95a5a6" stroke="#111" stroke-width="2"/>
+            <path d="M 40 130 L 160 130 L 130 300 L 70 300 Z" fill="#2980b9" opacity="0.8"/>
+            
+            <ellipse cx="60" cy="290" rx="30" ry="10" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            <ellipse cx="140" cy="290" rx="30" ry="10" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+
+            <path d="M 30 160 Q 10 200 20 240" fill="none" stroke="${skinColor}" stroke-width="25" stroke-linecap="round"/>
+            <line x1="5" y1="240" x2="5" y2="250" stroke="#eee" stroke-width="4"/><line x1="15" y1="240" x2="15" y2="250" stroke="#eee" stroke-width="4"/>
+            <line x1="25" y1="240" x2="25" y2="250" stroke="#eee" stroke-width="4"/><line x1="35" y1="240" x2="35" y2="250" stroke="#eee" stroke-width="4"/>
+            
+            <path d="M 170 160 Q 190 200 180 240" fill="none" stroke="${skinColor}" stroke-width="25" stroke-linecap="round"/>
+            <line x1="165" y1="240" x2="165" y2="250" stroke="#eee" stroke-width="4"/><line x1="175" y1="240" x2="175" y2="250" stroke="#eee" stroke-width="4"/>
+            <line x1="185" y1="240" x2="185" y2="250" stroke="#eee" stroke-width="4"/><line x1="195" y1="240" x2="195" y2="250" stroke="#eee" stroke-width="4"/>
+
+            <rect x="75" y="100" width="50" height="40" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+
+            <ellipse cx="100" cy="80" rx="45" ry="40" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            
+            <path d="M 70 75 Q 80 70 85 75" fill="none" stroke="#111" stroke-width="2"/>
+            <circle cx="78" cy="78" r="3" fill="#111"/>
+            <path d="M 130 75 Q 120 70 115 75" fill="none" stroke="#111" stroke-width="2"/>
+            <circle cx="122" cy="78" r="3" fill="#111"/>
+
+            <path d="M 80 110 Q 50 140 40 100 Q 55 125 80 105 Z" fill="#ecf0f1" stroke="#111" stroke-width="1.5"/>
+            <path d="M 120 110 Q 150 140 160 100 Q 145 125 120 105 Z" fill="#ecf0f1" stroke="#111" stroke-width="1.5"/>
+
+            <path d="M 85 90 L 115 90 Q 120 150 110 220 Q 95 240 85 220 Q 80 150 85 90 Z" fill="${skinColor}" stroke="#111" stroke-width="2"/>
+            <line x1="86" y1="110" x2="114" y2="110" stroke="rgba(0,0,0,0.3)" stroke-width="2"/>
+            <line x1="85" y1="130" x2="113" y2="130" stroke="rgba(0,0,0,0.3)" stroke-width="2"/>
+            <line x1="84" y1="150" x2="112" y2="150" stroke="rgba(0,0,0,0.3)" stroke-width="2"/>
+            <line x1="83" y1="170" x2="110" y2="170" stroke="rgba(0,0,0,0.3)" stroke-width="2"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// ГЕНЕРАТОР: ЛЮДОЯЩЕР
+// ==========================================
+function generateLizardfolkSVG(gender) {
+    const scaleColors = ['#1e8449', '#27ae60', '#9a7d0a', '#784212', '#212f3d'];
+    const scaleColor = scaleColors[Math.floor(Math.random() * scaleColors.length)];
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 120 250 Q 180 260 190 200" fill="none" stroke="${scaleColor}" stroke-width="25" stroke-linecap="round"/>
+            <path d="M 170 230 L 195 210 L 180 245" fill="#111" opacity="0.6"/> <rect x="80" y="110" width="40" height="50" fill="${scaleColor}" stroke="#111" stroke-width="2"/>
+            <path d="M 40 150 L 160 150 L 150 300 L 50 300 Z" fill="${scaleColor}" stroke="#111" stroke-width="2"/>
+            <path d="M 70 150 L 130 150 L 120 300 L 80 300 Z" fill="rgba(255,255,255,0.2)"/>
+
+            <polygon points="60,60 140,60 130,120 70,120" fill="${scaleColor}" stroke="#111" stroke-width="2"/>
+            <polygon points="100,60 90,40 110,40" fill="#222"/>
+            <polygon points="75,60 65,45 85,45" fill="#222"/>
+            <polygon points="125,60 115,45 135,45" fill="#222"/>
+
+            <path d="M 80 90 Q 100 140 120 90 Z" fill="${scaleColor}" stroke="#111" stroke-width="2"/>
+
+            <circle cx="75" cy="80" r="7" fill="#f1c40f" stroke="#111"/>
+            <ellipse cx="75" cy="80" rx="1.5" ry="5" fill="#000"/>
+            <circle cx="125" cy="80" r="7" fill="#f1c40f" stroke="#111"/>
+            <ellipse cx="125" cy="80" rx="1.5" ry="5" fill="#000"/>
+
+            <path d="M 85 110 Q 100 120 115 110" fill="none" stroke="#111" stroke-width="2"/>
+            <polygon points="90,112 93,118 96,112" fill="#fff"/>
+            <polygon points="100,114 103,120 106,114" fill="#fff"/>
+            <polygon points="110,112 113,118 116,112" fill="#fff"/>
         </svg>
     `;
 }

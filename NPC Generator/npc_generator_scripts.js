@@ -145,9 +145,8 @@ function renderSquad() {
 }
 
 // ==========================================
-// НОВЫЕ ФУНКЦИИ ГЕНЕРАЦИИ ВНЕШНОСТИ
+// ФУНКЦИЯ ОТКРЫТИЯ ПОРТРЕТА
 // ==========================================
-
 function showPortrait(index) {
     const npc = squad[index];
     if (!npc) return;
@@ -157,25 +156,45 @@ function showPortrait(index) {
     const svgContainer = document.getElementById('modal-npc-svg-container');
 
     nameLabel.textContent = `${npc.name} (${npc.race})`;
-    
-    // Проверяем, генерировалась ли внешность для этого конкретного NPC ранее
-    if (!npc.visual) {
-        // Если нет — генерируем её сейчас через главную функцию-маршрутизатор
+    const raceLower = npc.race.toLowerCase().trim();
+
+    // Логика для Изменяющегося
+    if (raceLower === 'изменяющийся') {
+        if (!npc.changelingTrueForm) {
+            // Инициализация форм
+            npc.changelingTrueForm = generateChangelingTrueSVG(npc.gender);
+            
+            const availableRaces = Object.keys(raceGenerators).filter(r => r !== 'изменяющийся');
+            const randomDisguiseRace = availableRaces[Math.floor(Math.random() * availableRaces.length)];
+            npc.changelingDisguiseForm = raceGenerators[randomDisguiseRace](npc.gender);
+            
+            npc.showTrueForm = true; 
+        } else {
+            // Переключение при клике
+            npc.showTrueForm = !npc.showTrueForm;
+        }
+        npc.visual = npc.showTrueForm ? npc.changelingTrueForm : npc.changelingDisguiseForm;
+    } 
+    // Логика для всех остальных
+    else if (!npc.visual) {
         npc.visual = generateVisualForRace(npc);
-        
-        // Сохраняем обновленный отряд в память браузера
-        localStorage.setItem('npcSquad', JSON.stringify(squad));
     }
 
-    // Вставляем сохраненный SVG
+    // Сохраняем результат в NPC и в LocalStorage
+    squad[index] = npc;
+    localStorage.setItem('npcSquad', JSON.stringify(squad));
+
+    // Вставляем SVG
     svgContainer.innerHTML = npc.visual;
 
+    // Показываем модальное окно
     modal.classList.remove('modal-hidden');
     modal.classList.add('modal-visible');
 }
 
-// Старую функцию generateAarakocraSVG отсюда удаляем!
-
+// ==========================================
+// ФУНКЦИЯ ЗАКРЫТИЯ (ВЫНЕСЕНА НАРУЖУ!)
+// ==========================================
 function closePortrait() {
     const modal = document.getElementById('portrait-modal');
     modal.classList.remove('modal-visible');
