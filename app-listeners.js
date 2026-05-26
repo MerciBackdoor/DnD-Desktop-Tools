@@ -43,6 +43,8 @@ const APP_WINDOW_DEFAULTS = {
   'Character Card': { w: 420,  h: 720 },
   'Traps': { w: 610,  h: 680 },
   'trap_card': { w: 650, h: 560 },
+  'Quick Notes': { w: 450, h: 450 },
+  'Magic Ball': { w: 380, h: 380 }
 };
 
 /**
@@ -110,6 +112,143 @@ function findWinByUrl(urlFragment) {
 //   'ТИП_СООБЩЕНИЯ': function(data, event) { ... }
 //
 const APP_HANDLERS = {
+
+  
+
+
+
+
+
+    'dnd-desktop-create-sticky': function(data) {
+    const { title, content, color } = data;
+    const noteId = 'sticky_' + Date.now();
+
+    // Цветовые палитры стикеров
+    const palettes = {
+      yellow: { bg: '#fef08a', tape: 'rgba(254,240,138,0.6)', lines: '#fde047', text: '#1c1917', titleClr: '#713f12', fold: '#a16207' },
+      amber:  { bg: '#fed7aa', tape: 'rgba(253,215,170,0.6)', lines: '#fdba74', text: '#1c1917', titleClr: '#7c2d12', fold: '#c2410c' },
+      green:  { bg: '#bbf7d0', tape: 'rgba(187,247,208,0.6)', lines: '#86efac', text: '#14532d', titleClr: '#052e16', fold: '#15803d' },
+      blue:   { bg: '#bae6fd', tape: 'rgba(186,230,253,0.6)', lines: '#7dd3fc', text: '#0c4a6e', titleClr: '#082f49', fold: '#0369a1' },
+      pink:   { bg: '#fbcfe8', tape: 'rgba(251,207,232,0.6)', lines: '#f9a8d4', text: '#500724', titleClr: '#831843', fold: '#be185d' },
+      purple: { bg: '#ddd6fe', tape: 'rgba(221,214,254,0.6)', lines: '#c4b5fd', text: '#2e1065', titleClr: '#3b0764', fold: '#6d28d9' },
+    };
+    const p = palettes[color] || palettes.yellow;
+
+    const safe = s => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+    const noteHTML = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+    body {
+      background: ${p.bg};
+      font-family: 'Caveat', cursive;
+      position: relative;
+    }
+    /* Линованный фон */
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        transparent, transparent 23px,
+        ${p.lines}88 23px, ${p.lines}88 24px
+      );
+      background-position: 0 ${title ? '62px' : '38px'};
+      pointer-events: none;
+      z-index: 0;
+    }
+    /* Загнутый уголок */
+    body::after {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 24px; height: 24px;
+      background: linear-gradient(225deg, rgba(0,0,0,0.22) 50%, ${p.fold}99 50%);
+      z-index: 2;
+    }
+    /* Клейкая полоска (скотч) */
+    .tape {
+      position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      width: 60px; height: 18px;
+      background: ${p.tape};
+      border-radius: 0 0 2px 2px;
+      border: 1px solid rgba(255,255,255,0.4);
+      border-top: none;
+      z-index: 3;
+    }
+    .inner {
+      position: absolute;
+      inset: 0;
+      padding: ${title ? '22px 14px 16px' : '22px 14px 16px'};
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 1;
+      overflow: hidden;
+    }
+    h1 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: ${p.titleClr};
+      line-height: 1.15;
+      word-break: break-word;
+      flex-shrink: 0;
+      border-bottom: 1.5px solid ${p.fold}55;
+      padding-bottom: 4px;
+      margin-bottom: 2px;
+    }
+    p {
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: ${p.text};
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+    p::-webkit-scrollbar { width: 3px; }
+    p::-webkit-scrollbar-thumb { background: ${p.fold}55; border-radius: 2px; }
+  </style>
+</head>
+<body>
+  <div class="tape"></div>
+  <div class="inner">
+    ${title ? `<h1>${safe(title)}</h1>` : ''}
+    <p>${safe(content)}</p>
+  </div>
+</body>
+</html>`;
+
+    const w = 280, h = 260;
+    const app = {
+      id:     noteId,
+      title:  title || 'Заметка',
+      icon:   '📌',
+      url:    'about:blank',
+      srcdoc: noteHTML,
+      w, h
+    };
+
+    if (typeof centeredWindowPosition === 'function') {
+      const pos = centeredWindowPosition(w, h, Math.floor(Math.random() * 6));
+      app.x = pos.x; app.y = pos.y;
+    }
+
+    if (typeof createWindow === 'function') {
+      createWindow(app);
+      setTimeout(() => {
+        const iframe = document.getElementById('fr-' + noteId);
+        if (iframe) iframe.srcdoc = noteHTML;
+      }, 50);
+    }
+  },
 
 
 
