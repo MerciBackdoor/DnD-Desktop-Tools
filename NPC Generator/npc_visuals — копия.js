@@ -47,7 +47,7 @@ const raceGenerators = {
     'локата': generateLocathahSVG,
     'локсодон': generateLoxodonSVG,
     'людоящер': generateLizardfolkSVG,
-    'изменяющийся': generateChangelingLogic,
+    'изменяющиеся': generateChangelingLogic,
     'минотавр': generateMinotaurSVG,
     'орк': generateOrcSVG,
     'плазмоид': generatePlasmoidSVG,
@@ -64,7 +64,8 @@ const raceGenerators = {
     'харенгон': generateHarengonSVG,
     'хенра': generateKhenraSVG,
     'шифтер': generateShifterSVG,
-    'юань-ти': generateYuanTiSVG
+    'юань-ти': generateYuanTiSVG,
+    'нага': generateNagaSVG,
 };
 
 // Главная функция, которая определяет, какую расу рисовать
@@ -1865,6 +1866,139 @@ function generateYuanTiSVG(gender) {
 
             <line x1="90" y1="115" x2="110" y2="115" stroke="#111" stroke-width="1.5"/>
             <path d="M 100 115 L 100 123 L 97 127 M 100 123 L 103 127" fill="none" stroke="#e74c3c" stroke-width="1.5"/>
+        </svg>
+    `;
+}
+
+// ==========================================
+// NAGA GENERATOR
+// ==========================================
+function generateNagaSVG(gender) {
+    const isMale = gender === 'Мужчина';
+    
+    // Arrays for scales and eyes matching the description
+    const scaleColors = ['#2ecc71', '#f1c40f', '#cd7f32', '#2c3e50', '#1abc9c'];
+    const eyeColors = ['#f1c40f', '#ffbf00', '#2ecc71', '#e74c3c'];
+    
+    // Randomize colors safely
+    const scaleColor = scaleColors[Math.floor(Math.random() * scaleColors.length)];
+    const eyeColor = eyeColors[Math.floor(Math.random() * eyeColors.length)];
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            
+            <!-- Lower body coils for a strong, muscular snake tail -->
+            <ellipse cx="100" cy="270" rx="75" ry="25" fill="${scaleColor}" stroke="#111" stroke-width="2"/>
+            <ellipse cx="100" cy="245" rx="60" ry="20" fill="${scaleColor}" stroke="#111" stroke-width="2"/>
+
+            <!-- Torso rising up -->
+            <path d="M 75 120 L 125 120 L 140 245 L 60 245 Z" fill="${scaleColor}" stroke="#111" stroke-width="2"/>
+
+            <!-- Belly plates -->
+            <path d="M 85 120 L 115 120 L 125 245 L 75 245 Z" fill="#e5e8e8" opacity="0.6" stroke="#111" stroke-width="1"/>
+            <line x1="83" y1="140" x2="117" y2="140" stroke="#111" stroke-width="1" opacity="0.4"/>
+            <line x1="81" y1="160" x2="119" y2="160" stroke="#111" stroke-width="1" opacity="0.4"/>
+            <line x1="79" y1="180" x2="121" y2="180" stroke="#111" stroke-width="1" opacity="0.4"/>
+            <line x1="77" y1="200" x2="123" y2="200" stroke="#111" stroke-width="1" opacity="0.4"/>
+            <line x1="75" y1="220" x2="125" y2="220" stroke="#111" stroke-width="1" opacity="0.4"/>
+
+            <!-- Majestic cobra hood -->
+            <path d="M 100 30 Q 170 40 140 130 Q 100 110 60 130 Q 30 40 100 30 Z" fill="${scaleColor}" stroke="#111" stroke-width="2"/>
+            <path d="M 100 35 Q 155 45 130 125 Q 100 110 70 125 Q 45 45 100 35 Z" fill="#e5e8e8" opacity="0.2" stroke="none"/>
+
+            <!-- Shoulders and Arms (smooth static pose) -->
+            <path d="M 75 125 L 45 160 L 55 170 L 80 140 Z" fill="${scaleColor}" stroke="#111" stroke-width="2"/>
+            <path d="M 125 125 L 155 160 L 145 170 L 120 140 Z" fill="${scaleColor}" stroke="#111" stroke-width="2"/>
+
+            <!-- Neck -->
+            <rect x="88" y="90" width="24" height="35" fill="${scaleColor}" stroke="#111" stroke-width="2"/>
+            
+            <!-- Head with high cheekbones and elongated snout -->
+            <polygon points="80,50 120,50 130,85 100,110 70,85" fill="${scaleColor}" stroke="#111" stroke-width="2"/>
+            
+            <!-- Hypnotic expressive eyes -->
+            <polygon points="80,65 92,60 95,70" fill="${eyeColor}" stroke="#111" stroke-width="1.5"/>
+            <polygon points="120,65 108,60 105,70" fill="${eyeColor}" stroke="#111" stroke-width="1.5"/>
+            
+            <!-- Vertical slit pupils -->
+            <line x1="89" y1="62" x2="87" y2="69" stroke="#111" stroke-width="2"/>
+            <line x1="111" y1="62" x2="113" y2="69" stroke="#111" stroke-width="2"/>
+
+            <!-- Thin nostrils -->
+            <line x1="95" y1="90" x2="97" y2="88" stroke="#111" stroke-width="1.5"/>
+            <line x1="105" y1="90" x2="103" y2="88" stroke="#111" stroke-width="1.5"/>
+
+            <!-- Mouth and protruding fangs -->
+            <line x1="88" y1="98" x2="112" y2="98" stroke="#111" stroke-width="1.5"/>
+            <polygon points="90,98 93,106 96,98" fill="#fff" stroke="#111" stroke-width="0.5"/>
+            <polygon points="110,98 107,106 104,98" fill="#fff" stroke="#111" stroke-width="0.5"/>
+
+            <!-- Crest detail variation based on gender -->
+            ${isMale 
+                ? '<polygon points="95,40 100,15 105,40" fill="#111"/>' 
+                : '<ellipse cx="100" cy="40" rx="8" ry="12" fill="${scaleColor}" stroke="#111" stroke-width="1.5"/>'
+            }
+        </svg>
+    `;
+}
+
+// ==========================================
+// CHANGELING GENERATOR
+// ==========================================
+function generateChangelingSVG(gender) {
+    const isMale = gender === 'Мужчина';
+    
+    // Pale, gray and waxy skin tones for the true form
+    const skinColors = ['#e0e0e0', '#cfd8dc', '#dcdcdc', '#eceff1'];
+    const skinColor = skinColors[Math.floor(Math.random() * skinColors.length)];
+    
+    // Silver or stark white hair
+    const hairColors = ['#ffffff', '#f5f5f5', '#eceff1'];
+    const hairColor = hairColors[Math.floor(Math.random() * hairColors.length)];
+
+    return `
+        <svg viewBox="0 0 200 300" width="100%" height="300px" xmlns="http://www.w3.org/2000/svg">
+            
+            <!-- Shifting aura effect to represent flowing flesh -->
+            <ellipse cx="98" cy="90" rx="30" ry="38" fill="none" stroke="#b0bec5" stroke-width="1.5" opacity="0.4"/>
+            <ellipse cx="102" cy="92" rx="30" ry="37" fill="none" stroke="#90a4ae" stroke-width="1.5" opacity="0.3"/>
+
+            <!-- Lean, flexible torso -->
+            <path d="M 75 140 L 125 140 L 115 240 L 85 240 Z" fill="#78909c" stroke="#455a64" stroke-width="1.5"/>
+            
+            <!-- Arms conforming closely to the body -->
+            <path d="M 75 140 L 55 210 L 65 220 L 85 150 Z" fill="#78909c" stroke="#455a64" stroke-width="1.5"/>
+            <path d="M 125 140 L 145 210 L 135 220 L 115 150 Z" fill="#78909c" stroke="#455a64" stroke-width="1.5"/>
+
+            <!-- Straight, thin, lifeless hair -->
+            <path d="M 70 80 Q 100 40 130 80 L 135 150 L 65 150 Z" fill="${hairColor}" stroke="#cfd8dc" stroke-width="1"/>
+
+            <!-- Neck -->
+            <rect x="92" y="115" width="16" height="30" fill="${skinColor}" stroke="#78909c" stroke-width="1.5"/>
+
+            <!-- Smooth, highly symmetrical head -->
+            <ellipse cx="100" cy="90" rx="27" ry="35" fill="${skinColor}" stroke="#78909c" stroke-width="1.5"/>
+
+            <!-- Milky, blank eyes without irises -->
+            <ellipse cx="88" cy="85" rx="6" ry="3.5" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+            <ellipse cx="112" cy="85" rx="6" ry="3.5" fill="#ffffff" stroke="#90a4ae" stroke-width="1"/>
+            
+            <!-- Subtle shadow around eyes for an unsettling look -->
+            <path d="M 82 82 Q 88 78 94 82" fill="none" stroke="#b0bec5" stroke-width="1"/>
+            <path d="M 106 82 Q 112 78 118 82" fill="none" stroke="#b0bec5" stroke-width="1"/>
+
+            <!-- Very faint, unfinished nose -->
+            <path d="M 100 85 L 100 98" stroke="#b0bec5" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M 97 99 L 103 99" stroke="#b0bec5" stroke-width="1.2" stroke-linecap="round"/>
+
+            <!-- Expressionless mouth -->
+            <line x1="93" y1="110" x2="107" y2="110" stroke="#90a4ae" stroke-width="1.2"/>
+
+            <!-- Minimal gender variations to keep the androgynous/unfinished vibe -->
+            ${isMale 
+                ? '<path d="M 90 118 Q 100 122 110 118" fill="none" stroke="#cfd8dc" stroke-width="1"/>' 
+                : '<path d="M 94 107 Q 100 111 106 107" fill="none" stroke="#90a4ae" stroke-width="0.8"/>'
+            }
         </svg>
     `;
 }
