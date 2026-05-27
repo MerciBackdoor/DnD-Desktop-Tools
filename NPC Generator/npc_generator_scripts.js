@@ -140,6 +140,8 @@ function renderSquad() {
             slotElement.innerHTML = `<p class="placeholder">🎲</p>`;
             slotElement.classList.add('empty');
             slotElement.classList.remove('locked-card');
+            slotElement.onclick = null; // Clear click handler for empty slots
+            slotElement.style.cursor = 'default'; // Reset cursor back to default
         }
     }
 }
@@ -200,3 +202,4 @@ function closePortrait() {
     modal.classList.remove('modal-visible');
     modal.classList.add('modal-hidden');
 }
+
